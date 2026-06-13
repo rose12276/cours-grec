@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grec Leçon 3 — Τα ψώνια</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#f5f7fa;padding:1rem}
+.app{max-width:720px;margin:0 auto}
+
+.header{background:linear-gradient(135deg,#8e3a00 0%,#5c2500 100%);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;color:white;display:flex;align-items:center;justify-content:space-between}
+.header h1{font-size:20px;font-weight:500;color:white;margin-bottom:4px}
+.sub{font-size:13px;opacity:.75}
+.prog-bar{height:5px;background:rgba(255,255,255,.2);border-radius:3px;margin-top:10px}
+.prog-fill{height:100%;background:#f4b97a;border-radius:3px;transition:width .5s}
+
+.nav{display:flex;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap}
+.tab{flex:1;min-width:70px;padding:8px 4px;font-size:12px;border:1px solid #ddd;border-radius:8px;cursor:pointer;background:white;color:#666;transition:all .2s;font-family:inherit;text-align:center}
+.tab.active{background:#8e3a00;color:white;border-color:#8e3a00}
+.sec{display:none}.sec.active{display:block}
+
+/* VOCAB */
+.vocab-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem}
+.vc{background:white;border:1px solid #ddd;border-radius:10px;padding:10px 14px;cursor:pointer;transition:all .18s;position:relative}
+.vc:hover{border-color:#8e3a00}
+.vc .gk{font-size:15px;font-weight:600;color:#8e3a00}
+.vc .ph{font-size:11px;color:#888;font-style:italic;margin:2px 0}
+.vc .fr{font-size:13px;color:#333}
+.vc .spk{position:absolute;top:8px;right:10px;background:none;border:none;cursor:pointer;color:#8e3a00;font-size:15px;padding:0}
+.vc.flip{background:#fff4ec}
+
+/* GRAMMAIRE */
+.gcard{background:white;border:1px solid #ddd;border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem}
+.gtitle{font-size:12px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px}
+.ctable{width:100%;border-collapse:collapse;font-size:13px}
+.ctable td,.ctable th{padding:7px 10px;text-align:left;border-bottom:1px solid #f0f0f0}
+.ctable th{font-weight:600;color:#888;font-size:12px}
+.gk-col{color:#8e3a00;font-weight:600;font-size:14px}
+.end{color:#c0392b}
+.tipbox{background:#fff4ec;border-left:3px solid #8e3a00;border-radius:0 8px 8px 0;padding:10px 14px;font-size:13px;color:#4a1e00;margin-top:10px}
+.aud{color:#8e3a00;cursor:pointer;font-size:14px;background:none;border:none;padding:0 3px}
+
+/* MARCHÉ INTERACTIF */
+.marche-wrap{background:#fff4ec;border-radius:14px;padding:1.25rem;margin-bottom:1rem}
+.marche-title{font-size:13px;font-weight:600;color:#8e3a00;margin-bottom:12px}
+.marche-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px}
+.item-card{background:white;border:1px solid #ddd;border-radius:10px;padding:10px;text-align:center;cursor:pointer;transition:all .18s;position:relative}
+.item-card:hover,.item-card.selected{border-color:#8e3a00;background:#fff4ec}
+.item-emoji{font-size:26px}
+.item-gk{font-size:13px;font-weight:600;color:#8e3a00;margin-top:4px}
+.item-ph{font-size:10px;color:#888;font-style:italic}
+.item-fr{font-size:11px;color:#555}
+.item-price{font-size:11px;color:#8e3a00;font-weight:600;margin-top:2px}
+.item-spk{position:absolute;top:4px;right:6px;background:none;border:none;cursor:pointer;color:#8e3a00;font-size:12px;padding:0}
+.basket{background:white;border:1px solid #ddd;border-radius:10px;padding:10px 14px;font-size:13px;color:#555;min-height:40px}
+.basket-title{font-weight:600;color:#8e3a00;margin-bottom:4px;font-size:13px}
+
+/* DIALOGUE */
+.chat-container{background:white;border:1px solid #ddd;border-radius:14px;overflow:hidden;margin-bottom:1rem}
+.chat-header{background:#fff4ec;padding:12px 16px;border-bottom:1px solid #ddd;display:flex;align-items:center;gap:10px}
+.avatar{width:40px;height:40px;border-radius:50%;background:#8e3a00;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.avatar-info .name{font-size:14px;font-weight:600;color:#111}
+.avatar-info .role{font-size:12px;color:#888}
+.chat-messages{padding:16px;min-height:280px;max-height:460px;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
+.msg{display:flex;gap:10px;align-items:flex-start;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{flex-direction:row-reverse}
+.msg-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:white;flex-shrink:0;margin-top:2px}
+.msg-avatar.vendor{background:#8e3a00}
+.msg-avatar.user-av{background:#1a5fa8}
+.bubble{max-width:75%;padding:10px 14px;border-radius:12px;font-size:14px;line-height:1.6}
+.bubble.vendor-bubble{background:#fff4ec;border:1px solid #f4b97a;color:#111;border-radius:4px 12px 12px 12px}
+.bubble.user-bubble{background:#1a5fa8;color:white;border-radius:12px 4px 12px 12px}
+.bubble .ph{font-size:11px;opacity:.7;font-style:italic;margin-top:3px}
+.bubble .fr{font-size:12px;opacity:.7;margin-top:2px}
+.bubble .speak-line{background:none;border:none;cursor:pointer;font-size:13px;padding:0;margin-top:4px;opacity:.8;color:#8e3a00}
+
+.hint-chips{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 10px}
+.chip{padding:5px 12px;background:#fff4ec;color:#8e3a00;border-radius:20px;font-size:12px;cursor:pointer;border:1px solid #f4b97a}
+.chip:hover{background:#f4b97a;color:white}
+
+.voice-panel{border-top:1px solid #f0f0f0;padding:14px 16px;background:#fafafa}
+.voice-controls{display:flex;gap:8px;align-items:center}
+.send-btn{flex:1;padding:11px;background:#8e3a00;color:white;border:none;border-radius:10px;cursor:pointer;font-size:14px;font-family:inherit;font-weight:500}
+.send-btn:disabled{background:#ccc;cursor:not-allowed}
+.send-btn:not(:disabled):hover{background:#5c2500}
+
+.progress-steps{display:flex;gap:4px;padding:10px 16px 0;align-items:center}
+.step{width:28px;height:4px;border-radius:2px;background:#e0e0e0;transition:background .3s}
+.step.done{background:#8e3a00}
+.step.current{background:#f4b97a}
+.step-label{font-size:12px;color:#888;margin-left:6px}
+
+/* QUIZ */
+.qcard{background:white;border:1px solid #ddd;border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+.qq{font-size:15px;font-weight:500;color:#111;margin-bottom:4px}
+.qctx{font-size:13px;color:#888;margin-bottom:12px;font-style:italic}
+.qopts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.qopt{padding:9px 14px;font-size:13px;border:1px solid #ddd;border-radius:8px;cursor:pointer;background:white;color:#333;text-align:left;transition:all .18s;font-family:inherit}
+.qopt:hover{border-color:#8e3a00;background:#fff4ec}
+.qopt.ok{background:#d4edda;border-color:#28a745;color:#155724}
+.qopt.ko{background:#f8d7da;border-color:#dc3545;color:#721c24}
+.qfb{margin-top:10px;font-size:13px;padding:8px 12px;border-radius:8px;display:none}
+.qfb.show{display:block}
+.qfb.good{background:#d4edda;color:#155724}
+.qfb.bad{background:#f8d7da;color:#721c24}
+
+/* RÉSUMÉ */
+.scard{background:white;border:1px solid #ddd;border-radius:12px;padding:1rem 1.25rem;margin-bottom:10px}
+.erow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:14px}
+.erow:last-child{border-bottom:none}
+.e-gk{color:#8e3a00;font-weight:600}
+.e-fr{color:#888;font-size:13px}
+
+/* TEXTE AUDIO */
+.text-card{background:white;border:1px solid #ddd;border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+.text-title{font-size:12px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:14px}
+.text-controls{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.play-btn{display:flex;align-items:center;gap:6px;padding:9px 16px;background:#8e3a00;color:white;border:none;border-radius:8px;cursor:pointer;font-size:14px;font-family:inherit;font-weight:500}
+.play-btn:hover{background:#5c2500}
+.play-btn.playing{background:#dc3545}
+.speed-btn{padding:7px 12px;border:1px solid #ddd;border-radius:8px;cursor:pointer;font-size:13px;font-family:inherit;background:white;color:#555}
+.speed-btn.active{background:#fff4ec;border-color:#8e3a00;color:#8e3a00;font-weight:600}
+.hide-btn{padding:7px 12px;border:1px solid #ddd;border-radius:8px;cursor:pointer;font-size:12px;font-family:inherit;background:white;color:#555}
+.hide-btn.hidden-mode{background:#fff3cd;border-color:#ffc107;color:#856404}
+.text-block{background:#fff4ec;border-radius:10px;padding:1rem 1.25rem;margin-bottom:10px}
+.text-line{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;cursor:pointer;border-radius:8px;padding:6px 8px;transition:background .15s}
+.text-line:last-child{margin-bottom:0}
+.text-line:hover{background:#f4d4b0}
+.text-line.highlight{background:#f4b97a}
+.line-num{min-width:22px;height:22px;border-radius:50%;background:#8e3a00;color:white;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.line-content .gk{font-size:15px;font-weight:500;color:#111;line-height:1.5}
+.line-content .ph{font-size:11px;color:#888;font-style:italic;margin:2px 0}
+.line-content .fr{font-size:12px;color:#555}
+
+/* COMPRÉHENSION */
+.comp-card{background:white;border:1px solid #ddd;border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+.comp-title{font-size:12px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:14px}
+.comp-q{margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #f0f0f0}
+.comp-q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.comp-question{font-size:14px;font-weight:500;color:#111;margin-bottom:4px}
+.comp-greek{font-size:13px;color:#8e3a00;font-style:italic;margin-bottom:8px}
+.comp-opts{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.comp-opt{padding:8px 12px;font-size:13px;border:1px solid #ddd;border-radius:8px;cursor:pointer;background:white;color:#333;text-align:left;font-family:inherit;transition:all .18s}
+.comp-opt:hover{border-color:#8e3a00;background:#fff4ec}
+.comp-opt.ok{background:#d4edda;border-color:#28a745;color:#155724;pointer-events:none}
+.comp-opt.ko{background:#f8d7da;border-color:#dc3545;color:#721c24;pointer-events:none}
+.comp-fb{margin-top:8px;font-size:12px;padding:6px 10px;border-radius:6px;display:none}
+.comp-fb.show{display:block}
+.comp-fb.good{background:#d4edda;color:#155724}
+.comp-fb.bad{background:#f8d7da;color:#721c24}
+.comp-score-bar{background:#f0f0f0;border-radius:10px;height:8px;margin:10px 0 4px;overflow:hidden}
+.comp-score-fill{height:100%;background:#8e3a00;border-radius:10px;transition:width .5s}
+.comp-score-label{font-size:13px;color:#555;text-align:center}
+
+.next-btn{width:100%;padding:12px;background:#8e3a00;color:white;border:none;border-radius:10px;cursor:pointer;font-size:14px;font-family:inherit;margin-top:1rem}
+.next-btn:hover{background:#5c2500}
+.section-label{font-size:13px;color:#888;margin-bottom:12px}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="app">
+
+<div class="header">
+  <div>
+    <h1>🇬🇷 Leçon 3 — Τα ψώνια</h1>
+    <div class="sub">Les courses · Au marché · ~30 min</div>
+    <div class="prog-bar"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+  </div>
+  <div style="font-size:32px;opacity:.85">🛒</div>
+</div>
+
+<div class="nav">
+  <button class="tab active" onclick="showTab('vocab',this,15)">📖 Vocab</button>
+  <button class="tab" onclick="showTab('marche',this,30)">🏪 Marché</button>
+  <button class="tab" onclick="showTab('grammar',this,50)">📐 Grammaire</button>
+  <button class="tab" onclick="showTab('dialogue',this,75)">💬 Dialogue</button>
+  <button class="tab" onclick="showTab('quiz',this,90)">🧠 Quiz</button>
+  <button class="tab" onclick="showTab('summary',this,100)">✅ Résumé</button>
+</div>
+
+<!-- VOCABULAIRE -->
+<div class="sec active" id="tab-vocab">
+  <p class="section-label">Clique sur 🔊 pour écouter · clique sur la carte pour la retourner</p>
+  <div class="vocab-grid" id="vocabGrid"></div>
+  <button class="next-btn" onclick="showTab('marche',document.querySelectorAll('.tab')[1],30)">Continuer → Le marché 🏪</button>
+</div>
+
+<!-- MARCHÉ INTERACTIF -->
+<div class="sec" id="tab-marche">
+  <p class="section-label">Clique sur un produit pour l'ajouter à ton panier et l'entendre en grec 🛒</p>
+  <div class="marche-wrap">
+    <div class="marche-title">🏪 Η λαϊκή αγορά — Le marché</div>
+    <div class="marche-grid" id="marcheGrid"></div>
+    <div class="basket">
+      <div class="basket-title">🧺 Το καλάθι μου — Mon panier</div>
+      <div id="basketItems" style="color:#888;font-size:13px;margin-top:4px">Clique sur des produits pour les ajouter…</div>
+      <div id="basketTotal" style="font-size:13px;font-weight:600;color:#8e3a00;margin-top:6px"></div>
+    </div>
+  </div>
+  <div class="gcard">
+    <div class="gtitle">💬 Phrases utiles au marché</div>
+    <table class="ctable">
+      <thead><tr><th>Grec</th><th>Phonétique</th><th>Français</th></tr></thead>
+      <tbody id="phrasesTable"></tbody>
+    </table>
+  </div>
+  <button class="next-btn" onclick="showTab('grammar',document.querySelectorAll('.tab')[2],50)">Continuer → Grammaire</button>
+</div>
+
+<!-- GRAMMAIRE -->
+<div class="sec" id="tab-grammar">
+  <div class="gcard">
+    <div class="gtitle">Exprimer la quantité — Combien ? Πόσο / Πόσα ;</div>
+    <table class="ctable">
+      <thead><tr><th>Grec</th><th>Phonétique</th><th>Usage</th></tr></thead>
+      <tbody>
+        <tr><td class="gk-col">Πόσο κάνει ; <button class="aud" onclick="speak('Πόσο κάνει;')">🔊</button></td><td style="font-style:italic;color:#888;font-size:12px">Póso káni?</td><td style="font-size:12px;color:#555">Combien ça coûte ? (sing.)</td></tr>
+        <tr><td class="gk-col">Πόσο κάνουν ; <button class="aud" onclick="speak('Πόσο κάνουν;')">🔊</button></td><td style="font-style:italic;color:#888;font-size:12px">Póso kánoun?</td><td style="font-size:12px;color:#555">Combien ça coûte ? (plur.)</td></tr>
+        <tr><td class="gk-col">Θέλω ένα κιλό <button class="aud" onclick="speak('Θέλω ένα κιλό')">🔊</button></td><td style="font-style:italic;color:#888;font-size:12px">Thélo éna kiló</td><td style="font-size:12px;color:#555">Je veux un kilo</td></tr>
+        <tr><td class="gk-col">Μισό κιλό <button class="aud" onclick="speak('Μισό κιλό')">🔊</button></td><td style="font-style:italic;color:#888;font-size:12px">Misó kiló</td><td style="font-size:12px;color:#555">Un demi-kilo</td></tr>
+        <tr><td class="gk-col">Δύο κομμάτια <button class="aud" onclick="speak('Δύο κομμάτια')">🔊</button></td><td style="font-style:italic;color:#888;font-size:12px">Dío komátia</td><td style="font-size:12px;color:#555">Deux morceaux/pièces</td></tr>
+      </tbody>
+    </table>
+    <div class="tipbox">💡 <strong>κάνει</strong> (il coûte) vient de <strong>κάνω</strong> (faire/coûter). Au pluriel : <strong>κάνουν</strong>. C'est le verbe universel du prix en grec !</div>
+  </div>
+  <div class="gcard">
+    <div class="gtitle">Verbe θέλω (vouloir) — présent</div>
+    <table class="ctable">
+      <thead><tr><th>Pronom</th><th>Grec</th><th>Prononciation</th><th>Exemple</th></tr></thead>
+      <tbody id="conjTable"></tbody>
+    </table>
+    <div class="tipbox">💡 <strong>θέλω</strong> est un verbe de groupe 1 irrégulier. Retiens surtout : <em>Θέλω…</em> (Je veux), <em>Θέλετε…;</em> (Vous voulez…?)</div>
+  </div>
+  <div class="gcard">
+    <div class="gtitle">Les chiffres utiles au marché</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:8px" id="numbersGrid"></div>
+    <div class="tipbox">💡 Pour les prix : <strong>ένα ευρώ</strong> (1€), <strong>δύο ευρώ</strong> (2€), <strong>ενενήντα λεπτά</strong> (90 centimes).</div>
+  </div>
+  <button class="next-btn" onclick="showTab('dialogue',document.querySelectorAll('.tab')[3],75)">Continuer → Dialogue 💬</button>
+</div>
+
+<!-- DIALOGUE -->
+<div class="sec" id="tab-dialogue">
+  <p class="section-label">Nikos tient un stand au marché. Réponds en phonétique ou en grec · <strong>Entrée</strong> pour envoyer.</p>
+  <div class="chat-container">
+    <div class="chat-header">
+      <div class="avatar">👨</div>
+      <div class="avatar-info">
+        <div class="name">Nikos — Ο μανάβης</div>
+        <div class="role">Vendeur de fruits et légumes · Marché d'Athènes</div>
+      </div>
+    </div>
+    <div class="progress-steps" id="progressSteps"></div>
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="hint-chips" id="hintChips" style="display:none"></div>
+    <div class="voice-panel">
+      <div style="font-size:12px;color:#555;margin-bottom:6px">✏️ Écris ta réponse en phonétique ou en grec</div>
+      <textarea id="transcriptBox" placeholder="Ex : thélo éna kiló domátes, póso káni…" style="width:100%;border:1px solid #ddd;border-radius:8px;padding:10px 14px;font-size:14px;font-family:inherit;color:#333;background:white;resize:none;min-height:58px;outline:none;transition:border .2s" oninput="onTypeAnswer(this.value)" onkeydown="onEnterSend(event)"></textarea>
+      <div style="font-size:11px;color:#aaa;margin:4px 0 8px">Entrée pour envoyer · Shift+Entrée pour aller à la ligne</div>
+      <div class="voice-controls">
+        <button class="send-btn" id="sendBtn" onclick="sendAnswer()" disabled>Envoyer ↗</button>
+      </div>
+    </div>
+  </div>
+  <div id="correctionArea"></div>
+  <button class="next-btn" id="nextQuizBtn" style="display:none" onclick="showTab('quiz',document.querySelectorAll('.tab')[4],90)">Continuer → Quiz 🧠</button>
+</div>
+
+<!-- QUIZ -->
+<div class="sec" id="tab-quiz">
+  <div id="quizContainer"></div>
+  <div style="text-align:center;font-size:14px;color:#888;margin-top:8px" id="quizScore"></div>
+  <button class="next-btn" onclick="showTab('summary',document.querySelectorAll('.tab')[5],100)">Voir le résumé →</button>
+</div>
+
+<!-- RÉSUMÉ -->
+<div class="sec" id="tab-summary">
+  <div class="scard">
+    <div style="font-size:14px;font-weight:600;color:#111;margin-bottom:10px">6 expressions clés</div>
+    <div id="summaryExprs"></div>
+  </div>
+
+  <div class="text-card">
+    <div class="text-title">📖 Texte à écouter — Στη λαϊκή αγορά</div>
+    <div class="text-controls">
+      <button class="play-btn" id="playAllBtn" onclick="playAll()">▶ Écouter tout le texte</button>
+      <button class="speed-btn active" id="speed1" onclick="setSpeed(0.75,'speed1')">🐢 Lent</button>
+      <button class="speed-btn" id="speed2" onclick="setSpeed(1.0,'speed2')">▶ Normal</button>
+      <button class="hide-btn" id="hideTransBtn" onclick="toggleHideTrans()">👁 Masquer traductions</button>
+    </div>
+    <div class="text-block" id="textBlock"></div>
+    <div style="font-size:12px;color:#888;margin-top:6px">💡 Clique sur une ligne pour l'écouter seule</div>
+  </div>
+
+  <div class="comp-card">
+    <div class="comp-title">🧠 Compréhension — Questions sur le texte</div>
+    <div id="compQuestions"></div>
+    <div class="comp-score-bar"><div class="comp-score-fill" id="compFill" style="width:0%"></div></div>
+    <div class="comp-score-label" id="compScoreLabel">Réponds aux questions ci-dessus</div>
+  </div>
+
+  <div class="scard">
+    <div style="font-size:14px;font-weight:600;color:#111;margin-bottom:8px">Bilan de session</div>
+    <div id="summaryScore" style="font-size:13px;color:#555;line-height:1.8"></div>
+  </div>
+  <button class="next-btn" onclick="alert('Leçon 4 — Les sorties et rendez-vous arrive bientôt !')">Leçon 4 → Les sorties ↗</button>
+</div>
+
+</div>
+<script>
+// ─── DATA ─────────────────────────────────────────────────────────────────────
+const vocab=[
+  {greek:'η αγορά',ph:'i agorá',fr:'le marché'},
+  {greek:'το μαγαζί',ph:'to magazí',fr:'la boutique'},
+  {greek:'θέλω',ph:'thélo',fr:'je veux'},
+  {greek:'η ντομάτα',ph:'i domáta',fr:'la tomate'},
+  {greek:'το μήλο',ph:'to mílo',fr:'la pomme'},
+  {greek:'το ψωμί',ph:'to psomí',fr:'le pain'},
+  {greek:'το τυρί',ph:'to tirí',fr:'le fromage'},
+  {greek:'το κρέας',ph:'to kréas',fr:'la viande'},
+  {greek:'το κιλό',ph:'to kiló',fr:'le kilo'},
+  {greek:'πόσο κάνει ;',ph:'póso káni?',fr:'combien ça coûte ?'},
+  {greek:'ακριβό / φτηνό',ph:'akrivó / ftinó',fr:'cher / bon marché'},
+  {greek:'το ευρώ / λεπτά',ph:'évro / leptá',fr:'euro / centimes'},
+];
+
+const marcheItems=[
+  {emoji:'🍅',greek:'η ντομάτα',ph:'domáta',fr:'tomate',price:'1,50€/kg'},
+  {emoji:'🍎',greek:'το μήλο',ph:'mílo',fr:'pomme',price:'2,00€/kg'},
+  {emoji:'🥒',greek:'το αγγούρι',ph:'angúri',fr:'concombre',price:'0,80€'},
+  {emoji:'🧅',greek:'το κρεμμύδι',ph:'kremídi',fr:'oignon',price:'1,20€/kg'},
+  {emoji:'🥔',greek:'η πατάτα',ph:'patáta',fr:'pomme de terre',price:'0,90€/kg'},
+  {emoji:'🍋',greek:'το λεμόνι',ph:'lemoní',fr:'citron',price:'0,50€'},
+  {emoji:'🧀',greek:'το τυρί',ph:'tirí',fr:'fromage',price:'8,00€/kg'},
+  {emoji:'🍞',greek:'το ψωμί',ph:'psomí',fr:'pain',price:'1,20€'},
+  {emoji:'🫒',greek:'η ελιά',ph:'eliá',fr:'olive',price:'4,00€/kg'},
+];
+
+const marketPhrases=[
+  {gk:'Τι θέλετε;',ph:'Ti thélete?',fr:'Qu\'est-ce que vous voulez ?'},
+  {gk:'Θέλω ένα κιλό ντομάτες.',ph:'Thélo éna kiló domátes.',fr:'Je veux un kilo de tomates.'},
+  {gk:'Πόσο κάνει;',ph:'Póso káni?',fr:'Combien ça coûte ?'},
+  {gk:'Κάνει δύο ευρώ το κιλό.',ph:'Káni dío évro to kiló.',fr:'Ça coûte deux euros le kilo.'},
+  {gk:'Έχετε φρέσκο ψωμί;',ph:'Échete frésko psomí?',fr:'Avez-vous du pain frais ?'},
+  {gk:'Ορίστε! Παρακαλώ.',ph:'Oríste! Parakaló.',fr:'Voilà ! Je vous en prie.'},
+  {gk:'Ευχαριστώ πολύ!',ph:'Efcharistó polí!',fr:'Merci beaucoup !'},
+];
+
+const conjData=[
+  {pr:'εγώ',form:'θέλ',end:'ω',ph:'thélo',ex:'Θέλω ντομάτες'},
+  {pr:'εσύ',form:'θέλ',end:'εις',ph:'théleis',ex:'Τι θέλεις;'},
+  {pr:'αυτός/ή',form:'θέλ',end:'ει',ph:'thélei',ex:'Θέλει μήλα'},
+  {pr:'εμείς',form:'θέλ',end:'ουμε',ph:'théloume',ex:'Θέλουμε τυρί'},
+  {pr:'εσείς',form:'θέλ',end:'ετε',ph:'thélete',ex:'Τι θέλετε;'},
+  {pr:'αυτοί',form:'θέλ',end:'ουν',ph:'théloun',ex:'Θέλουν ψωμί'},
+];
+
+const numbers=[
+  {n:'ένα',ph:'éna',v:'1'},{n:'δύο',ph:'dío',v:'2'},{n:'τρία',ph:'tría',v:'3'},
+  {n:'τέσσερα',ph:'téssera',v:'4'},{n:'πέντε',ph:'pénte',v:'5'},{n:'δέκα',ph:'déka',v:'10'},
+  {n:'είκοσι',ph:'íkosi',v:'20'},{n:'πενήντα',ph:'penínda',v:'50'},{n:'εκατό',ph:'ekató',v:'100'},
+];
+
+const turns=[
+  {
+    id:1,
+    vendor:{gk:'Καλημέρα! Τι θέλετε σήμερα;',ph:'Kaliméra! Ti thélete símera?',fr:'Bonjour ! Qu\'est-ce que vous voulez aujourd\'hui ?'},
+    hint:'Θέλω… / Καλημέρα, θέλω…',
+    chips:['Καλημέρα !','Θέλω ντομάτες','Θέλω ένα κιλό μήλα','Θέλω ψωμί'],
+    tip:'Pour commencer : <strong>Καλημέρα</strong> (bonjour le matin) + <strong>Θέλω</strong> (je veux) + le produit.'
+  },
+  {
+    id:2,
+    vendor:{gk:'Ορίστε. Πόσο θέλετε; Ένα κιλό;',ph:'Oríste. Póso thélete? Éna kiló?',fr:'Voilà. Combien vous en voulez ? Un kilo ?'},
+    hint:'Ναι, ένα κιλό / Μισό κιλό / Δύο κιλά',
+    chips:['Ναι, ένα κιλό παρακαλώ','Μισό κιλό','Δύο κιλά','Τρία κομμάτια'],
+    tip:'<strong>ένα κιλό</strong> (un kilo) · <strong>μισό κιλό</strong> (demi-kilo) · <strong>δύο κιλά</strong> (deux kilos — attention au pluriel !)'
+  },
+  {
+    id:3,
+    vendor:{gk:'Πόσο κάνει το τυρί;',ph:'Póso káni to tirí?',fr:'Combien coûte le fromage ?'},
+    hint:'Κάνει… ευρώ το κιλό / Πόσο κάνει;',
+    chips:['Πόσο κάνει το κιλό;','Κάνει οκτώ ευρώ','Είναι ακριβό !','Έχετε κάτι πιο φτηνό;'],
+    tip:'<strong>Κάνει</strong> (ça coûte) · <strong>ακριβό</strong> (cher) · <strong>φτηνό</strong> (bon marché). Tu peux aussi demander : <em>Έχετε κάτι πιο φτηνό;</em> (Vous avez quelque chose de moins cher ?)'
+  },
+  {
+    id:4,
+    vendor:{gk:'Θέλετε τίποτα άλλο;',ph:'Thélete típota állo?',fr:'Vous voulez autre chose ?'},
+    hint:'Όχι ευχαριστώ / Ναι, θέλω και…',
+    chips:['Όχι, ευχαριστώ !','Ναι, θέλω και ψωμί','Θέλω και λεμόνια','Αυτό είναι όλο'],
+    tip:'<strong>Τίποτα άλλο;</strong> = Autre chose ? · <strong>Αυτό είναι όλο</strong> (c\'est tout) · <strong>Και…</strong> (et aussi…)'
+  },
+  {
+    id:5,
+    vendor:{gk:'Όλα μαζί κάνουν επτά ευρώ και πενήντα λεπτά.',ph:'Óla mazí kánoun eptá évro ke penínda leptá.',fr:'En tout ça fait sept euros cinquante.'},
+    hint:'Ορίστε / Ευχαριστώ πολύ !',
+    chips:['Ορίστε, ευχαριστώ !','Ευχαριστώ πολύ !','Αντίο !','Καλή μέρα !'],
+    tip:'<strong>Ορίστε</strong> (voilà / tenez) · <strong>Ευχαριστώ πολύ</strong> (merci beaucoup) · <strong>Καλή μέρα</strong> (bonne journée) !'
+  },
+];
+
+const summaryExprs=[
+  {greek:'Τι θέλετε;',fr:'Qu\'est-ce que vous voulez ?'},
+  {greek:'Θέλω ένα κιλό…',fr:'Je veux un kilo de…'},
+  {greek:'Πόσο κάνει ;',fr:'Combien ça coûte ?'},
+  {greek:'Κάνει… ευρώ',fr:'Ça coûte… euros'},
+  {greek:'Τίποτα άλλο ;',fr:'Autre chose ?'},
+  {greek:'Ευχαριστώ πολύ !',fr:'Merci beaucoup !'},
+];
+
+const textLines=[
+  {gk:'Η Αννα πηγαίνει στη λαϊκή αγορά κάθε Σάββατο.',ph:'I Ána piyéni sti laïkí agorá káthe Sávato.',fr:'Anna va au marché chaque samedi.'},
+  {gk:'Θέλει ντομάτες, τυρί και φρέσκο ψωμί.',ph:'Thélei domátes, tirí ke frésko psomí.',fr:'Elle veut des tomates, du fromage et du pain frais.'},
+  {gk:'"Πόσο κάνουν οι ντομάτες;" ρωτάει τον μανάβη.',ph:'"Póso kánoun i domátes?" rotáei ton manávi.',fr:'"Combien coûtent les tomates ?" demande-t-elle au marchand.'},
+  {gk:'"Ένα ευρώ πενήντα το κιλό, κυρία μου!" απαντάει ο Νίκος.',ph:'"Éna évro penínda to kiló, kiría mou!" apandáei o Níkos.',fr:'"Un euro cinquante le kilo, madame !" répond Nikos.'},
+];
+
+const compData=[
+  {fr:'Quand Anna va-t-elle au marché ?',gk:'Πότε πηγαίνει η Άννα στην αγορά;',opts:['Chaque vendredi','Chaque samedi','Chaque dimanche','Tous les jours'],correct:1,fb:'Ligne 1 : κάθε Σάββατο = chaque samedi.'},
+  {fr:'Que veut acheter Anna ?',gk:'Τι θέλει η Άννα;',opts:['Pain, fromage, olives','Tomates, fromage, pain','Pommes, tomates, pain','Fromage, viande, pain'],correct:1,fb:'Ligne 2 : ντομάτες, τυρί και φρέσκο ψωμί.'},
+  {fr:'Quel est le prix des tomates ?',gk:'Πόσο κάνουν οι ντομάτες;',opts:['1,00€/kg','2,00€/kg','1,50€/kg','0,80€/kg'],correct:2,fb:'Ligne 4 : ένα ευρώ πενήντα το κιλό = 1,50€ le kilo.'},
+  {fr:'Comment s\'appelle le marchand ?',gk:'Πώς λέγεται ο μανάβης;',opts:['Γιώργης','Μάριος','Νίκος','Κώστας'],correct:2,fb:'Ligne 4 : απαντάει ο Νίκος = répond Nikos.'},
+];
+
+const quizData=[
+  {q:'Comment dit-on "je veux" en grec ?',ctx:'',opts:['Έχω','Θέλω','Πάω','Κάνω'],correct:1,fb:'Θέλω = je veux. Verbe du groupe 1, très utile au marché !'},
+  {q:'Comment demander le prix ?',ctx:'',opts:['Πόσο κάνει;','Τι θέλετε;','Πόσο έχει;','Τι κάνει;'],correct:0,fb:'Πόσο κάνει; (sing.) ou Πόσο κάνουν; (plur.) = combien ça coûte ?'},
+  {q:'Que signifie "μισό κιλό" ?',ctx:'',opts:['Deux kilos','Un kilo','Un demi-kilo','Un quart de kilo'],correct:2,fb:'μισό = demi · κιλό = kilo. Donc μισό κιλό = un demi-kilo.'},
+  {q:'Conjugue θέλω : "vous voulez"',ctx:'',opts:['θέλω','θέλεις','θέλει','θέλετε'],correct:3,fb:'Εσείς θέλετε = vous voulez. Terminaison -ετε pour la 2e personne du pluriel.'},
+  {q:'Comment dit-on "cher" en grec ?',ctx:'',opts:['φτηνό','ακριβό','φρέσκο','ωραίο'],correct:1,fb:'ακριβό = cher · φτηνό = bon marché. Deux adjectifs essentiels au marché !'},
+  {q:'Que signifie "Ορίστε" ?',ctx:'Entendu quand on vous remet quelque chose.',opts:['Merci','Au revoir','Voilà / Tenez','S\'il vous plaît'],correct:2,fb:'Ορίστε = voilà, tenez. On l\'utilise aussi pour "je vous écoute" au téléphone.'},
+  {q:'Comment dit-on "le fromage" en grec ?',ctx:'',opts:['το ψωμί','το κρέας','το τυρί','η ντομάτα'],correct:2,fb:'το τυρί (to tirí) = le fromage. Un incontournable du marché grec !'},
+  {q:'Que signifie "Τίποτα άλλο;" ?',ctx:'Question du vendeur en fin de course.',opts:['C\'est combien ?','Autre chose ?','Avez-vous du pain ?','C\'est tout ?'],correct:1,fb:'Τίποτα άλλο; = Autre chose ? Mot à mot : "rien d\'autre ?" — très fréquent au marché.'},
+  {q:'Comment dit-on "le pain" en grec ?',ctx:'',opts:['το τυρί','το ψωμί','το μήλο','η ελιά'],correct:1,fb:'το ψωμί (to psomí) = le pain. Un des premiers mots à connaître en grec !'},
+  {q:'Comment demander "Avez-vous du pain frais ?" ?',ctx:'',opts:['Θέλω φρέσκο ψωμί.','Έχετε φρέσκο ψωμί;','Πόσο κάνει το ψωμί;','Δεν έχω ψωμί.'],correct:1,fb:'Έχετε φρέσκο ψωμί; = Avez-vous du pain frais ? έχετε = vous avez, φρέσκο = frais.'},
+  {q:'Conjugue θέλω : "il/elle veut"',ctx:'Αυτή _______ ντομάτες.',opts:['θέλω','θέλεις','θέλει','θέλουμε'],correct:2,fb:'Αυτή θέλει = elle veut. Terminaison -ει pour la 3e personne du singulier.'},
+  {q:'Que signifie "φρέσκο" ?',ctx:'',opts:['Cher','Bon marché','Frais','Lourd'],correct:2,fb:'φρέσκο = frais. Adjectif très utile au marché : φρέσκο ψωμί, φρέσκα λαχανικά.'},
+  {q:'Comment dit-on "les olives" en grec ?',ctx:'',opts:['τα μήλα','οι ελιές','τα λεμόνια','οι ντομάτες'],correct:1,fb:'οι ελιές = les olives (pluriel de η ελιά). Les olives sont au cœur de la cuisine grecque !'},
+  {q:'Que signifie "κάθε Σάββατο" ?',ctx:'Lu dans le texte de compréhension.',opts:['Ce samedi','Chaque samedi','Samedi prochain','Le samedi matin'],correct:1,fb:'κάθε = chaque, tout(e) · Σάββατο = samedi. κάθε + jour = chaque jour de la semaine.'},
+  {q:'Comment dit-on "merci beaucoup" en grec ?',ctx:'',opts:['Παρακαλώ','Ορίστε','Ευχαριστώ πολύ','Καλημέρα'],correct:2,fb:'Ευχαριστώ πολύ = merci beaucoup. Ευχαριστώ seul = merci. πολύ = beaucoup.'},
+];
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let currentTurn=0;
+let transcript='';
+let quizAnswers={};
+let compAnswers={};
+let dialogueComplete=false;
+let basket=[];
+let speechRate=0.75;
+let isPlayingAll=false;
+let playIndex=-1;
+let transHidden=false;
+
+// ─── SPEECH ───────────────────────────────────────────────────────────────────
+function speak(text){
+  if(!window.speechSynthesis)return;
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='el-GR';u.rate=0.85;
+  window.speechSynthesis.speak(u);
+}
+
+// ─── VOCAB ────────────────────────────────────────────────────────────────────
+function buildVocab(){
+  const g=document.getElementById('vocabGrid');
+  vocab.forEach(v=>{
+    const c=document.createElement('div');c.className='vc';
+    c.innerHTML=`<button class="spk" onclick="event.stopPropagation();speak('${v.greek.replace(/'/g,"\\'")}')">🔊</button><div class="gk">${v.greek}</div><div class="ph">${v.ph}</div><div class="fr">${v.fr}</div>`;
+    c.onclick=()=>c.classList.toggle('flip');g.appendChild(c);
+  });
+}
+
+// ─── MARCHÉ ───────────────────────────────────────────────────────────────────
+function buildMarche(){
+  const g=document.getElementById('marcheGrid');
+  marcheItems.forEach((item,i)=>{
+    const c=document.createElement('div');c.className='item-card';c.id='item-'+i;
+    c.innerHTML=`<button class="item-spk" onclick="event.stopPropagation();speak('${item.greek.replace(/'/g,"\\'")}')">🔊</button><div class="item-emoji">${item.emoji}</div><div class="item-gk">${item.greek}</div><div class="item-ph">${item.ph}</div><div class="item-fr">${item.fr}</div><div class="item-price">${item.price}</div>`;
+    c.onclick=()=>toggleBasket(i,item,c);
+    g.appendChild(c);
+  });
+  const pt=document.getElementById('phrasesTable');
+  marketPhrases.forEach(p=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td style="color:#8e3a00;font-weight:600;font-size:13px">${p.gk} <button class="aud" onclick="speak('${p.gk.replace(/'/g,"\\'")}')">🔊</button></td><td style="font-style:italic;font-size:11px;color:#888">${p.ph}</td><td style="font-size:12px;color:#555">${p.fr}</td>`;
+    pt.appendChild(tr);
+  });
+}
+
+function toggleBasket(i,item,card){
+  speak(item.greek);
+  const idx=basket.findIndex(b=>b.i===i);
+  if(idx>=0){basket.splice(idx,1);card.classList.remove('selected');}
+  else{basket.push({i,item});card.classList.add('selected');}
+  renderBasket();
+}
+
+function renderBasket(){
+  const el=document.getElementById('basketItems');
+  const tot=document.getElementById('basketTotal');
+  if(basket.length===0){
+    el.textContent='Clique sur des produits pour les ajouter…';
+    tot.textContent='';return;
+  }
+  el.innerHTML=basket.map(b=>`<span style="display:inline-block;margin:2px 4px 2px 0;padding:3px 8px;background:#fff4ec;border:1px solid #f4b97a;border-radius:12px;font-size:12px">${b.item.emoji} ${b.item.greek}</span>`).join('');
+  tot.textContent=`→ En grec : Θέλω ${basket.map(b=>b.item.greek.replace(/^(η|ο|το) /,'')).join(', ')}`;
+}
+
+// ─── GRAMMAIRE ────────────────────────────────────────────────────────────────
+function buildConj(){
+  const tb=document.getElementById('conjTable');
+  conjData.forEach(r=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td style="color:#888;font-size:13px">${r.pr}</td><td class="gk-col">${r.form}<span class="end">${r.end}</span> <button class="aud" onclick="speak('${r.form+r.end}')">🔊</button></td><td style="font-style:italic;font-size:12px;color:#888">${r.ph}</td><td style="font-size:12px;color:#888">${r.ex}</td>`;
+    tb.appendChild(tr);
+  });
+  const ng=document.getElementById('numbersGrid');
+  numbers.forEach(n=>{
+    const span=document.createElement('div');
+    span.style.cssText='display:flex;align-items:center;gap:6px;padding:5px 10px;background:#fff4ec;border:1px solid #f4b97a;border-radius:8px;cursor:pointer;font-size:13px';
+    span.innerHTML=`<strong style="color:#8e3a00">${n.v}</strong> <span>${n.n}</span> <span style="color:#888;font-style:italic;font-size:11px">${n.ph}</span>`;
+    span.onclick=()=>speak(n.n);
+    ng.appendChild(span);
+  });
+}
+
+// ─── DIALOGUE ─────────────────────────────────────────────────────────────────
+function addMessage(who,gk,ph,fr,speakNow=false){
+  const chat=document.getElementById('chatMessages');
+  const div=document.createElement('div');
+  div.className='msg '+(who==='vendor'?'':'user');
+  const avClass=who==='vendor'?'vendor':'user-av';
+  const bubClass=who==='vendor'?'vendor-bubble':'user-bubble';
+  const avLabel=who==='vendor'?'NK':'Tu';
+  const speakBtn=who==='vendor'?`<br><button class="speak-line" onclick="speak('${gk.replace(/'/g,"\\'")}')">🔊 Écouter</button>`:'';
+  const phHtml=ph?`<div class="ph">${ph}</div>`:'';
+  const frHtml=fr?`<div class="fr">${fr}</div>`:'';
+  div.innerHTML=`<div class="msg-avatar ${avClass}">${avLabel}</div><div class="bubble ${bubClass}">${gk}${phHtml}${frHtml}${speakBtn}</div>`;
+  chat.appendChild(div);
+  chat.scrollTop=chat.scrollHeight;
+  if(speakNow&&who==='vendor')setTimeout(()=>speak(gk),300);
+}
+
+async function addCorrectionCard(userText,turnObj){
+  const area=document.getElementById('correctionArea');
+  const card=document.createElement('div');
+  card.className='gcard';card.style.marginBottom='10px';
+  card.innerHTML=`<div class="gtitle">✏️ Correction — Question ${currentTurn}</div><div style="padding:10px;font-size:13px;color:#888"><span style="display:inline-block;width:14px;height:14px;border:2px solid #8e3a00;border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite;vertical-align:-3px;margin-right:6px"></span>Analyse en cours…</div>`;
+  area.appendChild(card);
+  card.scrollIntoView({behavior:'smooth',block:'nearest'});
+
+  const systemPrompt=`Tu es un professeur de grec moderne. L'apprenant est dans une situation de marché grec (τα ψώνια).
+Il répond en phonétique latine ou en grec à une question du vendeur.
+Tu dois :
+1. Transcrire sa réponse en alphabet grec (si phonétique).
+2. Identifier les erreurs grammaticales ou de vocabulaire (s'il y en a).
+3. Proposer la version correcte en grec.
+4. Donner une explication courte en français (max 2 phrases).
+
+Réponds UNIQUEMENT en JSON valide sans markdown :
+{"transcription":"...","has_error":true/false,"errors":[],"corrected":"...","explanation":"..."}`;
+
+  const userPrompt=`Contexte : scène de marché grec. Question du vendeur : "${turnObj.vendor.fr}"\nRéponse de l'apprenant : "${userText}"\nTranscris et corrige.`;
+
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:500,system:systemPrompt,messages:[{role:'user',content:userPrompt}]})});
+    const data=await resp.json();
+    const raw=data.content.find(b=>b.type==='text')?.text||'{}';
+    let result;
+    try{result=JSON.parse(raw);}catch(e){result=JSON.parse(raw.replace(/```json|```/g,'').trim());}
+    const transcGk=result.transcription||userText;
+    const corrected=result.corrected||transcGk;
+    const hasError=result.has_error||false;
+    const errors=result.errors||[];
+    const explanation=result.explanation||'';
+    const errorBlock=hasError
+      ?`<div style="background:#fff3cd;border-left:3px solid #ffc107;border-radius:0 6px 6px 0;padding:8px 12px;margin:8px 0;font-size:13px;color:#856404">⚠️ <strong>Erreur(s) :</strong><br>${errors.map(e=>`• ${e}`).join('<br>')}</div>`
+      :`<div style="background:#d4edda;border-left:3px solid #28a745;border-radius:0 6px 6px 0;padding:8px 12px;margin:8px 0;font-size:13px;color:#155724">✅ Bonne réponse !</div>`;
+    card.innerHTML=`
+      <div class="gtitle">✏️ Correction — Question ${currentTurn}</div>
+      <table style="width:100%;font-size:13px;border-collapse:collapse">
+        <tr style="border-bottom:1px solid #f0f0f0"><td style="padding:7px 10px;color:#888;width:36%;vertical-align:top">Ta réponse</td><td style="padding:7px 10px;font-style:italic;color:#555">${userText}</td></tr>
+        <tr style="border-bottom:1px solid #f0f0f0"><td style="padding:7px 10px;color:#888;vertical-align:top">→ En grec</td><td style="padding:7px 10px;color:#1a5fa8;font-weight:600;font-size:15px">${transcGk} <button class="aud" onclick="speak('${transcGk.replace(/'/g,"\\'")}')">🔊</button></td></tr>
+        ${hasError?`<tr><td style="padding:7px 10px;color:#888;vertical-align:top">Version correcte</td><td style="padding:7px 10px;color:#8e3a00;font-weight:600;font-size:15px">${corrected} <button class="aud" onclick="speak('${corrected.replace(/'/g,"\\'")}')">🔊</button></td></tr>`:''}
+      </table>
+      ${errorBlock}
+      <div class="tipbox">💡 ${explanation||turnObj.tip}</div>`;
+    card.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }catch(err){
+    card.innerHTML=`<div class="gtitle">✏️ Correction — Question ${currentTurn}</div><div style="padding:10px;font-size:13px;color:#888">Ta réponse : <em>${userText}</em></div><div class="tipbox">💡 ${turnObj.tip}</div>`;
+  }
+}
+
+function onTypeAnswer(val){
+  transcript=val.trim();
+  document.getElementById('sendBtn').disabled=transcript.length===0;
+}
+function onEnterSend(e){
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();if(transcript.trim().length>0)sendAnswer();}
+}
+
+function sendAnswer(){
+  const box=document.getElementById('transcriptBox');
+  transcript=box.value.trim();
+  if(!transcript)return;
+  const turn=turns[currentTurn];
+  addMessage('user',transcript,'','');
+  addCorrectionCard(transcript,turn);
+  currentTurn++;
+  updateProgressSteps();
+  transcript='';box.value='';
+  document.getElementById('sendBtn').disabled=true;
+  box.focus();
+  if(currentTurn<turns.length){
+    setTimeout(()=>{
+      const next=turns[currentTurn];
+      addMessage('vendor',next.vendor.gk,next.vendor.ph,next.vendor.fr,true);
+      showHints(next.chips);
+    },1200);
+  }else{
+    dialogueComplete=true;
+    setTimeout(()=>{
+      addMessage('vendor','Ευχαριστώ! Καλή μέρα σας! 🎉','Efcharistó! Kalí méra sas!','Merci ! Bonne journée !',true);
+      document.getElementById('nextQuizBtn').style.display='block';
+      document.getElementById('hintChips').style.display='none';
+    },1200);
+  }
+}
+
+function showHints(chips){
+  const area=document.getElementById('hintChips');
+  area.innerHTML='';
+  chips.forEach(c=>{
+    const span=document.createElement('span');span.className='chip';span.textContent=c;
+    span.onclick=()=>{const box=document.getElementById('transcriptBox');box.value=c;transcript=c;document.getElementById('sendBtn').disabled=false;box.focus();};
+    area.appendChild(span);
+  });
+  area.style.display='flex';
+}
+
+function updateProgressSteps(){
+  const cont=document.getElementById('progressSteps');cont.innerHTML='';
+  turns.forEach((_,i)=>{const s=document.createElement('div');s.className='step '+(i<currentTurn?'done':i===currentTurn?'current':'');cont.appendChild(s);});
+  const lbl=document.createElement('span');lbl.className='step-label';lbl.textContent=`Question ${Math.min(currentTurn+1,turns.length)} / ${turns.length}`;cont.appendChild(lbl);
+  document.getElementById('prog').style.width=(50+(currentTurn/turns.length)*40)+'%';
+}
+
+let dialogueStarted=false;
+function startDialogue(){
+  updateProgressSteps();
+  setTimeout(()=>{
+    addMessage('vendor',turns[0].vendor.gk,turns[0].vendor.ph,turns[0].vendor.fr,true);
+    showHints(turns[0].chips);
+  },500);
+}
+
+// ─── QUIZ ─────────────────────────────────────────────────────────────────────
+function buildQuiz(){
+  const cont=document.getElementById('quizContainer');
+  quizData.forEach((q,qi)=>{
+    const card=document.createElement('div');card.className='qcard';
+    const opts=q.opts.map((o,oi)=>`<button class="qopt" id="qo-${qi}-${oi}" onclick="answerQuiz(${qi},${oi})">${o}</button>`).join('');
+    card.innerHTML=`<div class="qq">Q${qi+1}. ${q.q}</div>${q.ctx?`<div class="qctx">${q.ctx}</div>`:''}<div class="qopts">${opts}</div><div class="qfb" id="qf-${qi}"></div>`;
+    cont.appendChild(card);
+  });
+}
+function answerQuiz(qi,oi){
+  if(quizAnswers[qi]!==undefined)return;
+  quizAnswers[qi]=oi;
+  const c=quizData[qi].correct;
+  document.getElementById('qo-'+qi+'-'+c).classList.add('ok');
+  const fb=document.getElementById('qf-'+qi);
+  if(oi===c){fb.textContent='✓ '+quizData[qi].fb;fb.className='qfb show good';}
+  else{document.getElementById('qo-'+qi+'-'+oi).classList.add('ko');fb.textContent='✗ '+quizData[qi].fb;fb.className='qfb show bad';}
+  const ok=Object.entries(quizAnswers).filter(([k,v])=>quizData[k].correct===v).length;
+  document.getElementById('quizScore').textContent=`Score : ${ok} / ${Object.keys(quizAnswers).length}`;
+}
+
+// ─── RÉSUMÉ ───────────────────────────────────────────────────────────────────
+function buildSummary(){
+  const cont=document.getElementById('summaryExprs');
+  summaryExprs.forEach(e=>{
+    const row=document.createElement('div');row.className='erow';
+    row.innerHTML=`<span class="e-gk">${e.greek} <button class="aud" onclick="speak('${e.greek.replace(/'/g,"\\'")}')">🔊</button></span><span class="e-fr">${e.fr}</span>`;
+    cont.appendChild(row);
+  });
+  buildTextBlock();
+  buildCompQuestions();
+}
+
+// ─── TEXTE ────────────────────────────────────────────────────────────────────
+function buildTextBlock(){
+  const block=document.getElementById('textBlock');
+  textLines.forEach((l,i)=>{
+    const div=document.createElement('div');div.className='text-line';div.id='tline-'+i;
+    div.onclick=()=>speakLine(i);
+    div.innerHTML=`<div class="line-num">${i+1}</div><div class="line-content"><div class="gk">${l.gk}</div><div class="ph" id="ph-${i}">${l.ph}</div><div class="fr" id="fr-${i}">${l.fr}</div></div>`;
+    block.appendChild(div);
+  });
+}
+function speakLine(i){
+  window.speechSynthesis.cancel();
+  document.querySelectorAll('.text-line').forEach(l=>l.classList.remove('highlight'));
+  document.getElementById('tline-'+i).classList.add('highlight');
+  const u=new SpeechSynthesisUtterance(textLines[i].gk);
+  u.lang='el-GR';u.rate=speechRate;
+  u.onend=()=>document.getElementById('tline-'+i).classList.remove('highlight');
+  window.speechSynthesis.speak(u);
+}
+function setSpeed(rate,btnId){
+  speechRate=rate;
+  document.querySelectorAll('.speed-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(btnId).classList.add('active');
+}
+function playAll(){
+  if(isPlayingAll){window.speechSynthesis.cancel();isPlayingAll=false;playIndex=-1;document.getElementById('playAllBtn').textContent='▶ Écouter tout le texte';document.getElementById('playAllBtn').className='play-btn';document.querySelectorAll('.text-line').forEach(l=>l.classList.remove('highlight'));return;}
+  isPlayingAll=true;playIndex=0;
+  document.getElementById('playAllBtn').textContent='⏹ Arrêter';document.getElementById('playAllBtn').className='play-btn playing';
+  playNextLine();
+}
+function playNextLine(){
+  if(!isPlayingAll||playIndex>=textLines.length){isPlayingAll=false;playIndex=-1;document.getElementById('playAllBtn').textContent='▶ Réécouter';document.getElementById('playAllBtn').className='play-btn';document.querySelectorAll('.text-line').forEach(l=>l.classList.remove('highlight'));return;}
+  document.querySelectorAll('.text-line').forEach(l=>l.classList.remove('highlight'));
+  const el=document.getElementById('tline-'+playIndex);
+  if(el){el.classList.add('highlight');el.scrollIntoView({behavior:'smooth',block:'nearest'});}
+  const u=new SpeechSynthesisUtterance(textLines[playIndex].gk);
+  u.lang='el-GR';u.rate=speechRate;
+  u.onend=()=>{if(el)el.classList.remove('highlight');playIndex++;setTimeout(playNextLine,400);};
+  window.speechSynthesis.speak(u);
+}
+function toggleHideTrans(){
+  transHidden=!transHidden;
+  const btn=document.getElementById('hideTransBtn');
+  textLines.forEach((_,i)=>{const fr=document.getElementById('fr-'+i);const ph=document.getElementById('ph-'+i);if(fr)fr.style.display=transHidden?'none':'';if(ph)ph.style.display=transHidden?'none':'';});
+  btn.textContent=transHidden?'👁 Afficher traductions':'👁 Masquer traductions';
+  btn.className=transHidden?'hide-btn hidden-mode':'hide-btn';
+}
+
+// ─── COMPRÉHENSION ────────────────────────────────────────────────────────────
+function buildCompQuestions(){
+  const cont=document.getElementById('compQuestions');
+  compData.forEach((q,qi)=>{
+    const div=document.createElement('div');div.className='comp-q';
+    const opts=q.opts.map((o,oi)=>`<button class="comp-opt" id="co-${qi}-${oi}" onclick="answerComp(${qi},${oi})">${o}</button>`).join('');
+    div.innerHTML=`<div class="comp-question">Q${qi+1}. ${q.fr}</div><div class="comp-greek">${q.gk}</div><div class="comp-opts">${opts}</div><div class="comp-fb" id="cf-${qi}"></div>`;
+    cont.appendChild(div);
+  });
+}
+function answerComp(qi,oi){
+  if(compAnswers[qi]!==undefined)return;
+  compAnswers[qi]=oi;
+  const c=compData[qi].correct;
+  document.getElementById('co-'+qi+'-'+c).classList.add('ok');
+  const fb=document.getElementById('cf-'+qi);
+  if(oi===c){fb.textContent='✓ '+compData[qi].fb;fb.className='comp-fb show good';}
+  else{document.getElementById('co-'+qi+'-'+oi).classList.add('ko');fb.textContent='✗ '+compData[qi].fb;fb.className='comp-fb show bad';}
+  const ok=Object.entries(compAnswers).filter(([k,v])=>compData[k].correct==v).length;
+  const pct=Math.round(ok/compData.length*100);
+  document.getElementById('compFill').style.width=pct+'%';
+  document.getElementById('compScoreLabel').textContent=`Compréhension : ${ok} / ${Object.keys(compAnswers).length} — ${pct}%`;
+}
+
+function updateSummary(){
+  const ok=Object.entries(quizAnswers).filter(([k,v])=>quizData[k].correct===v).length;
+  const compOk=Object.entries(compAnswers).filter(([k,v])=>compData[k].correct==v).length;
+  document.getElementById('summaryScore').innerHTML=`
+    ${dialogueComplete?'✅ Dialogue au marché complété (5 échanges)':'⏳ Dialogue non terminé'}<br>
+    Quiz grammaire : <strong>${ok} / ${quizData.length}</strong><br>
+    Compréhension orale : <strong>${compOk} / ${compData.length}</strong><br>
+    Vocabulaire : ${vocab.length} mots · marché interactif exploré<br><br>
+    ${ok>=5&&compOk>=3&&dialogueComplete?'🌟 Excellente session ! Tu saurais faire tes courses en Grèce !':ok>=4?'👍 Très bien ! Encore un peu de pratique sur les prix.':'💪 Continue — réécoute le texte et refais le marché interactif !'}
+  `;
+}
+
+// ─── NAVIGATION ───────────────────────────────────────────────────────────────
+function showTab(id,btn,prog){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+  document.getElementById('prog').style.width=prog+'%';
+  if(id==='dialogue'&&!dialogueStarted){dialogueStarted=true;startDialogue();}
+  if(id==='summary'){buildSummary();}
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+buildVocab();buildMarche();buildConj();buildQuiz();buildSummary();
+</script>
+</body>
+</html>

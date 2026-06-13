@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grec Moderne — Mes leçons</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#f5f7fa;padding:1rem;min-height:100vh}
+.app{max-width:680px;margin:0 auto}
+
+.hero{background:linear-gradient(135deg,#1a3a6e 0%,#0d2347 100%);border-radius:18px;padding:2rem 1.5rem;margin-bottom:1.5rem;color:white;text-align:center;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;top:-40px;right:-40px;width:160px;height:160px;background:rgba(255,255,255,.05);border-radius:50%}
+.hero::after{content:'';position:absolute;bottom:-60px;left:-30px;width:200px;height:200px;background:rgba(255,255,255,.04);border-radius:50%}
+.flag{font-size:42px;margin-bottom:10px}
+.hero h1{font-size:22px;font-weight:600;color:white;margin-bottom:6px}
+.hero p{font-size:14px;opacity:.75;line-height:1.5;max-width:400px;margin:0 auto}
+.progress-global{background:rgba(255,255,255,.15);border-radius:20px;height:8px;margin-top:16px;overflow:hidden}
+.progress-global-fill{height:100%;background:linear-gradient(90deg,#60c8f5,#c9a7f5);border-radius:20px;transition:width .8s ease}
+.progress-label{font-size:12px;opacity:.7;margin-top:6px}
+
+.section-title{font-size:12px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.08em;margin-bottom:12px;padding-left:4px}
+
+.lessons-grid{display:flex;flex-direction:column;gap:12px;margin-bottom:1.5rem}
+.lesson-card{background:white;border:1px solid #e8e8e8;border-radius:14px;padding:1rem 1.25rem;display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit;transition:all .2s;position:relative;overflow:hidden}
+.lesson-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.08);border-color:#ccc}
+.lesson-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:14px 0 0 14px}
+.lesson-card.l1::before{background:#1a5fa8}
+.lesson-card.l2::before{background:#0d6e56}
+.lesson-card.l3::before{background:#8e3a00}
+.lesson-card.l4::before{background:#1a3a6e}
+.lesson-card.l5::before{background:#4a1a6e}
+
+.lesson-emoji{font-size:30px;flex-shrink:0;width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center}
+.l1 .lesson-emoji{background:#e8f2fb}
+.l2 .lesson-emoji{background:#e1f5ee}
+.l3 .lesson-emoji{background:#fff4ec}
+.l4 .lesson-emoji{background:#eef3fc}
+.l5 .lesson-emoji{background:#f3eefe}
+
+.lesson-info{flex:1;min-width:0}
+.lesson-num{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:2px}
+.l1 .lesson-num{color:#1a5fa8}
+.l2 .lesson-num{color:#0d6e56}
+.l3 .lesson-num{color:#8e3a00}
+.l4 .lesson-num{color:#1a3a6e}
+.l5 .lesson-num{color:#4a1a6e}
+.lesson-title{font-size:15px;font-weight:600;color:#111;margin-bottom:2px}
+.lesson-greek{font-size:13px;color:#888;margin-bottom:6px}
+.lesson-tags{display:flex;flex-wrap:wrap;gap:4px}
+.tag{padding:2px 8px;border-radius:20px;font-size:11px;font-weight:500}
+.l1 .tag{background:#e8f2fb;color:#1a5fa8}
+.l2 .tag{background:#e1f5ee;color:#0d6e56}
+.l3 .tag{background:#fff4ec;color:#8e3a00}
+.l4 .tag{background:#eef3fc;color:#1a3a6e}
+.l5 .tag{background:#f3eefe;color:#4a1a6e}
+.lesson-arrow{font-size:18px;color:#ccc;flex-shrink:0}
+
+.tips-card{background:white;border:1px solid #e8e8e8;border-radius:14px;padding:1rem 1.25rem;margin-bottom:1.5rem}
+.tips-title{font-size:13px;font-weight:700;color:#333;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.tip-row{display:flex;gap:10px;align-items:flex-start;padding:6px 0;border-bottom:1px solid #f5f5f5;font-size:13px;color:#555;line-height:1.5}
+.tip-row:last-child{border-bottom:none}
+.tip-icon{font-size:15px;flex-shrink:0;margin-top:1px}
+
+.footer{text-align:center;font-size:12px;color:#bbb;padding-bottom:1rem}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="hero">
+    <div class="flag">🇬🇷</div>
+    <h1>Grec Moderne — Mes leçons</h1>
+    <p>5 leçons interactives · Vocabulaire, grammaire, dialogue et quiz · Niveau intermédiaire</p>
+    <div class="progress-global"><div class="progress-global-fill" style="width:62%"></div></div>
+    <div class="progress-label">5 leçons disponibles · Programme 8 semaines</div>
+  </div>
+
+  <div class="section-title">📚 Mes leçons</div>
+  <div class="lessons-grid">
+
+    <a href="grec_lecon1_routine.html" class="lesson-card l1">
+      <div class="lesson-emoji">🏠</div>
+      <div class="lesson-info">
+        <div class="lesson-num">Leçon 1</div>
+        <div class="lesson-title">La routine du matin</div>
+        <div class="lesson-greek">Η καθημερινή ρουτίνα</div>
+        <div class="lesson-tags">
+          <span class="tag">Vocab</span>
+          <span class="tag">Conjugaison -άω</span>
+          <span class="tag">Dialogue</span>
+          <span class="tag">15 questions</span>
+        </div>
+      </div>
+      <div class="lesson-arrow">›</div>
+    </a>
+
+    <a href="grec_lecon2_vocal.html" class="lesson-card l2">
+      <div class="lesson-emoji">👨‍👩‍👧‍👦</div>
+      <div class="lesson-info">
+        <div class="lesson-num">Leçon 2</div>
+        <div class="lesson-title">La famille</div>
+        <div class="lesson-greek">Η οικογένεια</div>
+        <div class="lesson-tags">
+          <span class="tag">Arbre généalogique</span>
+          <span class="tag">Possessifs</span>
+          <span class="tag">έχω</span>
+          <span class="tag">15 questions</span>
+        </div>
+      </div>
+      <div class="lesson-arrow">›</div>
+    </a>
+
+    <a href="grec_lecon3_courses.html" class="lesson-card l3">
+      <div class="lesson-emoji">🛒</div>
+      <div class="lesson-info">
+        <div class="lesson-num">Leçon 3</div>
+        <div class="lesson-title">Les courses</div>
+        <div class="lesson-greek">Τα ψώνια</div>
+        <div class="lesson-tags">
+          <span class="tag">Marché interactif</span>
+          <span class="tag">θέλω</span>
+          <span class="tag">Les prix</span>
+          <span class="tag">15 questions</span>
+        </div>
+      </div>
+      <div class="lesson-arrow">›</div>
+    </a>
+
+    <a href="grec_lecon4_sorties.html" class="lesson-card l4">
+      <div class="lesson-emoji">🎭</div>
+      <div class="lesson-info">
+        <div class="lesson-num">Leçon 4</div>
+        <div class="lesson-title">Les sorties & rendez-vous</div>
+        <div class="lesson-greek">Οι εξόδοι</div>
+        <div class="lesson-tags">
+          <span class="tag">Agenda</span>
+          <span class="tag">Futur θα</span>
+          <span class="tag">Inviter / refuser</span>
+          <span class="tag">15 questions</span>
+        </div>
+      </div>
+      <div class="lesson-arrow">›</div>
+    </a>
+
+    <a href="grec_lecon5_travail.html" class="lesson-card l5">
+      <div class="lesson-emoji">💼</div>
+      <div class="lesson-info">
+        <div class="lesson-num">Leçon 5</div>
+        <div class="lesson-title">Le travail & l'école</div>
+        <div class="lesson-greek">Η δουλειά</div>
+        <div class="lesson-tags">
+          <span class="tag">Métiers</span>
+          <span class="tag">δουλεύω</span>
+          <span class="tag">Conversation libre</span>
+          <span class="tag">15 questions</span>
+        </div>
+      </div>
+      <div class="lesson-arrow">›</div>
+    </a>
+
+  </div>
+
+  <div class="section-title">💡 Conseils d'utilisation</div>
+  <div class="tips-card">
+    <div class="tip-row"><div class="tip-icon">🔊</div><div>Clique sur chaque bouton son pour entraîner ton oreille — écoute d'abord lentement, puis à vitesse normale.</div></div>
+    <div class="tip-row"><div class="tip-icon">✏️</div><div>Dans les dialogues, écris en phonétique si tu n'as pas le clavier grec — ex : <em>légome Roxane, écho énan aderfó</em>.</div></div>
+    <div class="tip-row"><div class="tip-icon">👁️</div><div>Dans le résumé, utilise le bouton <strong>"Masquer traductions"</strong> pour tester ta compréhension orale pure.</div></div>
+    <div class="tip-row"><div class="tip-icon">🔄</div><div>La leçon 5 a une conversation libre avec Kostas — elle nécessite une connexion internet pour fonctionner.</div></div>
+    <div class="tip-row"><div class="tip-icon">📱</div><div>Toutes les leçons fonctionnent sur iPhone et Android directement depuis le navigateur.</div></div>
+  </div>
+
+  <div class="footer">Grec Moderne · Leçons 1–5 · Niveau intermédiaire</div>
+</div>
+</body>
+</html>

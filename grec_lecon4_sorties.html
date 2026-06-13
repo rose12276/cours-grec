@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grec Leçon 4 — Οι εξόδοι</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#f5f7fa;padding:1rem}
+.app{max-width:720px;margin:0 auto}
+
+.header{background:linear-gradient(135deg,#1a3a6e 0%,#0d2347 100%);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;color:white;display:flex;align-items:center;justify-content:space-between}
+.header h1{font-size:20px;font-weight:500;color:white;margin-bottom:4px}
+.sub{font-size:13px;opacity:.75}
+.prog-bar{height:5px;background:rgba(255,255,255,.2);border-radius:3px;margin-top:10px}
+.prog-fill{height:100%;background:#7eb3f5;border-radius:3px;transition:width .5s}
+
+.nav{display:flex;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap}
+.tab{flex:1;min-width:70px;padding:8px 4px;font-size:12px;border:1px solid #ddd;border-radius:8px;cursor:pointer;background:white;color:#666;transition:all .2s;font-family:inherit;text-align:center}
+.tab.active{background:#1a3a6e;color:white;border-color:#1a3a6e}
+.sec{display:none}.sec.active{display:block}
+
+/* VOCAB */
+.vocab-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem}
+.vc{background:white;border:1px solid #ddd;border-radius:10px;padding:10px 14px;cursor:pointer;transition:all .18s;position:relative}
+.vc:hover{border-color:#1a3a6e}
+.vc .gk{font-size:15px;font-weight:600;color:#1a3a6e}
+.vc .ph{font-size:11px;color:#888;font-style:italic;margin:2px 0}
+.vc .fr{font-size:13px;color:#333}
+.vc .spk{position:absolute;top:8px;right:10px;background:none;border:none;cursor:pointer;color:#1a3a6e;font-size:15px;padding:0}
+.vc.flip{background:#eef3fc}
+
+/* GRAMMAIRE */
+.gcard{background:white;border:1px solid #ddd;border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem}
+.gtitle{font-size:12px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px}
+.ctable{width:100%;border-collapse:collapse;font-size:13px}
+.ctable td,.ctable th{padding:7px 10px;text-align:left;border-bottom:1px solid #f0f0f0}
+.ctable th{font-weight:600;color:#888;font-size:12px}
+.gk-col{color:#1a3a6e;font-weight:600;font-size:14px}
+.end{color:#c0392b}
+.tipbox{background:#eef3fc;border-left:3px solid #1a3a6e;border-radius:0 8px 8px 0;padding:10px 14px;font-size:13px;color:#0d2347;margin-top:10px}
+.aud{color:#1a3a6e;cursor:pointer;font-size:14px;background:none;border:none;padding:0 3px}
+.section-label{font-size:13px;color:#888;margin-bottom:12px}
+
+/* AGENDA INTERACTIF */
+.agenda-wrap{background:#eef3fc;border-radius:14px;padding:1.25rem;margin-bottom:1rem}
+.agenda-title{font-size:13px;font-weight:600;color:#1a3a6e;margin-bottom:12px}
+.days-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:12px}
+.day-col{background:white;border:1px solid #ddd;border-radius:8px;overflow:hidden;text-align:center}
+.day-header{background:#1a3a6e;color:white;padding:5px 2px;font-size:10px;font-weight:600}
+.day-num{font-size:13px;font-weight:600;color:#1a3a6e;padding:4px 2px}
+.activity-slot{margin:2px;padding:3px 4px;border-radius:5px;font-size:9px;cursor:pointer;text-align:left;border:none;width:calc(100% - 4px);font-family:inherit;transition:all .15s}
+.activity-slot:hover{opacity:.8}
+.invite-panel{background:white;border:1px solid #ddd;border-radius:10px;padding:12px 14px}
+.invite-title{font-size:13px;font-weight:600;color:#1a3a6e;margin-bottom:8px}
+.invite-info{font-size:13px;color:#555;line-height:1.7}
+.invite-gk{font-size:14px;font-weight:600;color:#1a3a6e;margin-top:6px}
+.invite-ph{font-size:11px;color:#888;font-style:italic}
+
+/* DIALOGUE */
+.chat-container{background:white;border:1px solid #ddd;border-radius:14px;overflow:hidden;margin-bottom:1rem}
+.chat-header{background:#eef3fc;padding:12px 16px;border-bottom:1px solid #ddd;display:flex;align-items:center;gap:10px}
+.avatar{width:40px;height:40px;border-radius:50%;background:#1a3a6e;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.avatar-info .name{font-size:14px;font-weight:600;color:#111}
+.avatar-info .role{font-size:12px;color:#888}
+.chat-messages{padding:16px;min-height:280px;max-height:460px;overflow-y:auto;display:flex;flex-direction:column;gap:12px}
+.msg{display:flex;gap:10px;align-items:flex-start;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{flex-direction:row-reverse}
+.msg-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:white;flex-shrink:0;margin-top:2px}
+.msg-avatar.elena{background:#1a3a6e}
+.msg-avatar.user-av{background:#8e3a00}
+.bubble{max-width:78%;padding:10px 14px;border-radius:12px;font-size:14px;line-height:1.6}
+.bubble.elena-bubble{background:#eef3fc;border:1px solid #7eb3f5;color:#111;border-radius:4px 12px 12px 12px}
+.bubble.user-bubble{background:#8e3a00;color:white;border-radius:12px 4px 12px 12px}
+.bubble .ph{font-size:11px;opacity:.7;font-style:italic;margin-top:3px}
+.bubble .fr{font-size:12px;opacity:.7;margin-top:2px}
+.bubble .speak-line{background:none;border:none;cursor:pointer;font-size:13px;padding:0;margin-top:4px;opacity:.85;color:#1a3a6e}
+
+.hint-chips{display:flex;flex-wrap:wrap;gap:6px;padding:0 16px 10px}
+.chip{padding:5px 12px;background:#eef3fc;color:#1a3a6e;border-radius:20px;font-size:12px;cursor:pointer;border:1px solid #7eb3f5}
+.chip:hover{background:#1a3a6e;color:white}
+
+.voice-panel{border-top:1px solid #f0f0f0;padding:14px 16px;background:#fafafa}
+.voice-controls{display:flex;gap:8px}
+.send-btn{flex:1;padding:11px;background:#1a3a6e;color:white;border:none;border-radius:10px;cursor:pointer;font-size:14px;font-family:inherit;font-weight:500}
+.send-btn:disabled{background:#ccc;cursor:not-allowed}
+.send-btn:not(:disabled):hover{background:#0d2347}
+
+.progress-steps{display:flex;gap:4px;padding:10px 16px 0;align-items:center}
+.step{width:28px;height:4px;border-radius:2px;background:#e0e0e0;transition:background .3s}
+.step.done{background:#1a3a6e}
+.step.current{background:#7eb3f5}
+.step-label{font-size:12px;color:#888;margin-left:6px}
+
+/* QUIZ */
+.qcard{background:white;border:1px solid #ddd;border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+.qq{font-size:15px;font-weight:500;color:#111;margin-bottom:4px}
+.qctx{font-size:13px;color:#888;margin-bottom:12px;font-style:italic}
+.qopts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.qopt{padding:9px 14px;font-size:13px;border:1px solid #ddd;border-radius:8px;cursor:pointer;background:white;color:#333;text-align:left;transition:all .18s;font-family:inherit}
+.qopt:hover{border-color:#1a3a6e;background:#eef3fc}
+.qopt.ok{background:#d4edda;border-color:#28a745;color:#155724}
+.qopt.ko{background:#f8d7da;border-color:#dc3545;color:#721c24}
+.qfb{margin-top:10px;font-size:13px;padding:8px 12px;border-radius:8px;display:none}
+.qfb.show{display:block}
+.qfb.good{background:#d4edda;color:#155724}
+.qfb.bad{background:#f8d7da;color:#721c24}
+
+/* RÉSUMÉ */
+.scard{background:white;border:1px solid #ddd;border-radius:12px;padding:1rem 1.25rem;margin-bottom:10px}
+.erow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:14px}
+.erow:last-child{border-bottom:none}
+.e-gk{color:#1a3a6e;font-weight:600}
+.e-fr{color:#888;font-size:13px}
+
+/* TEXTE AUDIO */
+.text-card{background:white;border:1px solid #ddd;border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+.text-title{font-size:12px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:14px}
+.text-controls{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.play-btn{padding:9px 16px;background:#1a3a6e;color:white;border:none;border-radius:8px;cursor:pointer;font-size:14px;font-family:inherit;font-weight:500}
+.play-btn:hover{background:#0d2347}
+.play-btn.playing{background:#dc3545}
+.speed-btn{padding:7px 12px;border:1px solid #ddd;border-radius:8px;cursor:pointer;font-size:13px;font-family:inherit;background:white;color:#555}
+.speed-btn.active{background:#eef3fc;border-color:#1a3a6e;color:#1a3a6e;font-weight:600}
+.hide-btn{padding:7px 12px;border:1px solid #ddd;border-radius:8px;cursor:pointer;font-size:12px;font-family:inherit;background:white;color:#555}
+.hide-btn.hidden-mode{background:#fff3cd;border-color:#ffc107;color:#856404}
+.text-block{background:#eef3fc;border-radius:10px;padding:1rem 1.25rem;margin-bottom:10px}
+.text-line{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;cursor:pointer;border-radius:8px;padding:6px 8px;transition:background .15s}
+.text-line:last-child{margin-bottom:0}
+.text-line:hover{background:#c5d9f7}
+.text-line.highlight{background:#7eb3f5}
+.line-num{min-width:22px;height:22px;border-radius:50%;background:#1a3a6e;color:white;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.line-content .gk{font-size:15px;font-weight:500;color:#111;line-height:1.5}
+.line-content .ph{font-size:11px;color:#888;font-style:italic;margin:2px 0}
+.line-content .fr{font-size:12px;color:#555}
+
+/* COMPRÉHENSION */
+.comp-card{background:white;border:1px solid #ddd;border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+.comp-title{font-size:12px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:14px}
+.comp-q{margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid #f0f0f0}
+.comp-q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.comp-question{font-size:14px;font-weight:500;color:#111;margin-bottom:4px}
+.comp-greek{font-size:13px;color:#1a3a6e;font-style:italic;margin-bottom:8px}
+.comp-opts{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.comp-opt{padding:8px 12px;font-size:13px;border:1px solid #ddd;border-radius:8px;cursor:pointer;background:white;color:#333;text-align:left;font-family:inherit;transition:all .18s}
+.comp-opt:hover{border-color:#1a3a6e;background:#eef3fc}
+.comp-opt.ok{background:#d4edda;border-color:#28a745;color:#155724;pointer-events:none}
+.comp-opt.ko{background:#f8d7da;border-color:#dc3545;color:#721c24;pointer-events:none}
+.comp-fb{margin-top:8px;font-size:12px;padding:6px 10px;border-radius:6px;display:none}
+.comp-fb.show{display:block}
+.comp-fb.good{background:#d4edda;color:#155724}
+.comp-fb.bad{background:#f8d7da;color:#721c24}
+.comp-score-bar{background:#f0f0f0;border-radius:10px;height:8px;margin:10px 0 4px;overflow:hidden}
+.comp-score-fill{height:100%;background:#1a3a6e;border-radius:10px;transition:width .5s}
+.comp-score-label{font-size:13px;color:#555;text-align:center}
+
+.next-btn{width:100%;padding:12px;background:#1a3a6e;color:white;border:none;border-radius:10px;cursor:pointer;font-size:14px;font-family:inherit;margin-top:1rem}
+.next-btn:hover{background:#0d2347}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="app">
+
+<div class="header">
+  <div>
+    <h1>🇬🇷 Leçon 4 — Οι εξόδοι</h1>
+    <div class="sub">Les sorties & rendez-vous · Inviter, accepter, refuser · ~30 min</div>
+    <div class="prog-bar"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+  </div>
+  <div style="font-size:32px;opacity:.85">🎭</div>
+</div>
+
+<div class="nav">
+  <button class="tab active" onclick="showTab('vocab',this,15)">📖 Vocab</button>
+  <button class="tab" onclick="showTab('agenda',this,30)">📅 Agenda</button>
+  <button class="tab" onclick="showTab('grammar',this,50)">📐 Grammaire</button>
+  <button class="tab" onclick="showTab('dialogue',this,75)">💬 Dialogue</button>
+  <button class="tab" onclick="showTab('quiz',this,90)">🧠 Quiz</button>
+  <button class="tab" onclick="showTab('summary',this,100)">✅ Résumé</button>
+</div>
+
+<!-- VOCAB -->
+<div class="sec active" id="tab-vocab">
+  <p class="section-label">Clique sur 🔊 pour écouter · clique sur la carte pour la retourner</p>
+  <div class="vocab-grid" id="vocabGrid"></div>
+  <button class="next-btn" onclick="showTab('agenda',document.querySelectorAll('.tab')[1],30)">Continuer → Agenda 📅</button>
+</div>
+
+<!-- AGENDA INTERACTIF -->
+<div class="sec" id="tab-agenda">
+  <p class="section-label">Clique sur une activité pour voir comment l'inviter en grec 🗓</p>
+  <div class="agenda-wrap">
+    <div class="agenda-title">📅 Η εβδομάδα μου — Ma semaine</div>
+    <div class="days-grid" id="daysGrid"></div>
+    <div class="invite-panel" id="invitePanel">
+      <div class="invite-title">👆 Sélectionne une activité pour voir la phrase d'invitation</div>
+    </div>
+  </div>
+  <div class="gcard">
+    <div class="gtitle">⏰ Les moments de la journée</div>
+    <table class="ctable">
+      <thead><tr><th>Grec</th><th>Phonétique</th><th>Français</th></tr></thead>
+      <tbody id="momentsTable"></tbody>
+    </table>
+  </div>
+  <button class="next-btn" onclick="showTab('grammar',document.querySelectorAll('.tab')[2],50)">Continuer → Grammaire</button>
+</div>
+
+<!-- GRAMMAIRE -->
+<div class="sec" id="tab-grammar">
+  <div class="gcard">
+    <div class="gtitle">Inviter — θα + verbe (futur simple)</div>
+    <p style="font-size:13px;color:#555;margin-bottom:10px">En grec, le futur se forme avec la particule <strong style="color:#1a3a6e">θα</strong> + verbe au présent.</p>
+    <table class="ctable">
+      <thead><tr><th>Présent</th><th>Futur avec θα</th><th>Français</th></tr></thead>
+      <tbody id="futureTable"></tbody>
+    </table>
+    <div class="tipbox">💡 <strong>θα</strong> est invariable — c'est comme le "will" anglais. <em>Θα πάμε;</em> = On y va ? / On ira ?</div>
+  </div>
+  <div class="gcard">
+    <div class="gtitle">Accepter · Refuser · Proposer — expressions clés</div>
+    <table class="ctable">
+      <thead><tr><th>Grec</th><th>Phonétique</th><th>Français</th><th></th></tr></thead>
+      <tbody id="expressionsTable"></tbody>
+    </table>
+  </div>
+  <div class="gcard">
+    <div class="gtitle">Verbe πάω (aller) — présent & futur</div>
+    <table class="ctable">
+      <thead><tr><th>Pronom</th><th>Présent</th><th>Futur (θα +)</th><th>Prononciation</th></tr></thead>
+      <tbody id="conjTable"></tbody>
+    </table>
+    <div class="tipbox">💡 <strong>Πάμε;</strong> (On y va ?) est l'une des expressions les plus utilisées en grec pour inviter quelqu'un à bouger !</div>
+  </div>
+  <button class="next-btn" onclick="showTab('dialogue',document.querySelectorAll('.tab')[3],75)">Continuer → Dialogue 💬</button>
+</div>
+
+<!-- DIALOGUE -->
+<div class="sec" id="tab-dialogue">
+  <p class="section-label">Elena t'invite à sortir. Réponds en phonétique ou en grec · <strong>Entrée</strong> pour envoyer.</p>
+  <div class="chat-container">
+    <div class="chat-header">
+      <div class="avatar">👩</div>
+      <div class="avatar-info">
+        <div class="name">Elena Stavros</div>
+        <div class="role">Amie grecque · Athènes</div>
+      </div>
+    </div>
+    <div class="progress-steps" id="progressSteps"></div>
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="hint-chips" id="hintChips" style="display:none"></div>
+    <div class="voice-panel">
+      <div style="font-size:12px;color:#555;margin-bottom:6px">✏️ Écris ta réponse en phonétique ou en grec</div>
+      <textarea id="transcriptBox" placeholder="Ex: ne, thélo polí ! / Dine borís stis okto? / Lípame, den boró…" style="width:100%;border:1px solid #ddd;border-radius:8px;padding:10px 14px;font-size:14px;font-family:inherit;color:#333;background:white;resize:none;min-height:58px;outline:none;transition:border .2s" oninput="onTypeAnswer(this.value)" onkeydown="onEnterSend(event)"></textarea>
+      <div style="font-size:11px;color:#aaa;margin:4px 0 8px">Entrée pour envoyer · Shift+Entrée pour aller à la ligne</div>
+      <div class="voice-controls">
+        <button class="send-btn" id="sendBtn" onclick="sendAnswer()" disabled>Envoyer ↗</button>
+      </div>
+    </div>
+  </div>
+  <div id="correctionArea"></div>
+  <button class="next-btn" id="nextQuizBtn" style="display:none" onclick="showTab('quiz',document.querySelectorAll('.tab')[4],90)">Continuer → Quiz 🧠</button>
+</div>
+
+<!-- QUIZ -->
+<div class="sec" id="tab-quiz">
+  <div id="quizContainer"></div>
+  <div style="text-align:center;font-size:14px;color:#888;margin-top:8px" id="quizScore"></div>
+  <button class="next-btn" onclick="showTab('summary',document.querySelectorAll('.tab')[5],100)">Voir le résumé →</button>
+</div>
+
+<!-- RÉSUMÉ -->
+<div class="sec" id="tab-summary">
+  <div class="scard">
+    <div style="font-size:14px;font-weight:600;color:#111;margin-bottom:10px">6 expressions clés</div>
+    <div id="summaryExprs"></div>
+  </div>
+  <div class="text-card">
+    <div class="text-title">📖 Texte à écouter — Ένα ραντεβού</div>
+    <div class="text-controls">
+      <button class="play-btn" id="playAllBtn" onclick="playAll()">▶ Écouter tout le texte</button>
+      <button class="speed-btn active" id="speed1" onclick="setSpeed(0.75,'speed1')">🐢 Lent</button>
+      <button class="speed-btn" id="speed2" onclick="setSpeed(1.0,'speed2')">▶ Normal</button>
+      <button class="hide-btn" id="hideTransBtn" onclick="toggleHideTrans()">👁 Masquer traductions</button>
+    </div>
+    <div class="text-block" id="textBlock"></div>
+    <div style="font-size:12px;color:#888;margin-top:6px">💡 Clique sur une ligne pour l'écouter seule</div>
+  </div>
+  <div class="comp-card">
+    <div class="comp-title">🧠 Compréhension — Questions sur le texte</div>
+    <div id="compQuestions"></div>
+    <div class="comp-score-bar"><div class="comp-score-fill" id="compFill" style="width:0%"></div></div>
+    <div class="comp-score-label" id="compScoreLabel">Réponds aux questions ci-dessus</div>
+  </div>
+  <div class="scard">
+    <div style="font-size:14px;font-weight:600;color:#111;margin-bottom:8px">Bilan de session</div>
+    <div id="summaryScore" style="font-size:13px;color:#555;line-height:1.8"></div>
+  </div>
+  <button class="next-btn" onclick="alert('Leçon 5 — Le travail et l\'école (η δουλειά) arrive bientôt !')">Leçon 5 → Le travail ↗</button>
+</div>
+
+</div><!-- end .app -->
+<script>
+// ─── DATA ─────────────────────────────────────────────────────────────────────
+const vocab=[
+  {greek:'η έξοδος',ph:'i éxodos',fr:'la sortie'},
+  {greek:'το ραντεβού',ph:'to randevú',fr:'le rendez-vous'},
+  {greek:'το σινεμά',ph:'to sinemá',fr:'le cinéma'},
+  {greek:'το εστιατόριο',ph:'to estiatório',fr:'le restaurant'},
+  {greek:'ο καφές',ph:'o kafés',fr:'le café'},
+  {greek:'το μπαρ',ph:'to bar',fr:'le bar'},
+  {greek:'το θέατρο',ph:'to théatro',fr:'le théâtre'},
+  {greek:'η συναυλία',ph:'i sinavlía',fr:'le concert'},
+  {greek:'θέλεις να πάμε;',ph:'théleis na páme?',fr:'tu veux qu\'on aille ?'},
+  {greek:'Λυπάμαι, δεν μπορώ',ph:'lípame, den boró',fr:'désolé(e), je ne peux pas'},
+  {greek:'Με χαρά !',ph:'me chará!',fr:'avec plaisir !'},
+  {greek:'Τι ώρα;',ph:'ti óra?',fr:'à quelle heure ?'},
+];
+
+const agendaDays=[
+  {day:'Δευ',num:'9',activities:[{text:'☕ Καφές',color:'#c8e6fa',textColor:'#0d3a6e',gk:'Θέλεις να πιούμε καφέ;',ph:'Théleis na pioúme kafé?',fr:'Tu veux qu\'on prenne un café ?'},]},
+  {day:'Τρί',num:'10',activities:[{text:'🎬 Σινεμά',color:'#ffddd2',textColor:'#8e2a00',gk:'Θέλεις να πάμε σινεμά;',ph:'Théleis na páme sinemá?',fr:'Tu veux qu\'on aille au cinéma ?'},]},
+  {day:'Τετ',num:'11',activities:[]},
+  {day:'Πέμ',num:'12',activities:[{text:'🍽 Φαγητό',color:'#d4edda',textColor:'#155724',gk:'Θέλεις να φάμε έξω;',ph:'Théleis na fáme éxo?',fr:'Tu veux qu\'on mange dehors ?'},]},
+  {day:'Παρ',num:'13',activities:[{text:'🎵 Συναυλία',color:'#e8d4f0',textColor:'#5c1a8e',gk:'Θέλεις να πάμε σε συναυλία;',ph:'Théleis na páme se sinavlía?',fr:'Tu veux qu\'on aille à un concert ?'},{text:'🍸 Μπαρ',color:'#fff4e0',textColor:'#7a4d00',gk:'Θέλεις να βγούμε για ποτό;',ph:'Théleis na vgoúme ya potó?',fr:'Tu veux qu\'on sorte prendre un verre ?'}]},
+  {day:'Σάβ',num:'14',activities:[{text:'🎭 Θέατρο',color:'#fde8d8',textColor:'#8e3a00',gk:'Θέλεις να πάμε θέατρο;',ph:'Théleis na páme théatro?',fr:'Tu veux qu\'on aille au théâtre ?'}]},
+  {day:'Κυρ',num:'15',activities:[]},
+];
+
+const moments=[
+  {gk:'το πρωί',ph:'to proí',fr:'le matin'},
+  {gk:'το μεσημέρι',ph:'to mesimeri',fr:'le midi'},
+  {gk:'το απόγευμα',ph:'to apóyevma',fr:'l\'après-midi'},
+  {gk:'το βράδυ',ph:'to vrádi',fr:'le soir'},
+  {gk:'στις οχτώ',ph:'stis ochtó',fr:'à 8h'},
+  {gk:'μετά τη δουλειά',ph:'metá ti douliá',fr:'après le travail'},
+];
+
+const futureData=[
+  {pres:'πάω',fut:'θα πάω',ph:'tha páo',fr:'j\'irai / je vais (futur)'},
+  {pres:'τρώω',fut:'θα φάμε',ph:'tha fáme',fr:'nous mangerons'},
+  {pres:'πίνω',fut:'θα πιούμε',ph:'tha pioúme',fr:'nous boirons'},
+  {pres:'βλέπω',fut:'θα δούμε',ph:'tha doúme',fr:'nous verrons'},
+  {pres:'βγαίνω',fut:'θα βγούμε',ph:'tha vgoúme',fr:'nous sortirons'},
+];
+
+const expressions=[
+  {gk:'Ναι, με χαρά!',ph:'Ne, me chará!',fr:'Oui, avec plaisir !',cat:'✅ Accepter'},
+  {gk:'Βεβαίως!',ph:'Vevéos!',fr:'Bien sûr !',cat:'✅ Accepter'},
+  {gk:'Λυπάμαι, δεν μπορώ.',ph:'Lípame, den boró.',fr:'Désolé(e), je ne peux pas.',cat:'❌ Refuser'},
+  {gk:'Δεν μπορώ αυτή τη φορά.',ph:'Den boró aftí ti forá.',fr:'Je ne peux pas cette fois.',cat:'❌ Refuser'},
+  {gk:'Ίσως αργότερα;',ph:'Ísos argótera?',fr:'Peut-être plus tard ?',cat:'🔄 Proposer'},
+  {gk:'Τι ώρα;',ph:'Ti óra?',fr:'À quelle heure ?',cat:'❓ Préciser'},
+  {gk:'Πού θα συναντηθούμε;',ph:'Pu tha sinandithúme?',fr:'Où est-ce qu\'on se retrouve ?',cat:'❓ Préciser'},
+];
+
+const conjData=[
+  {pr:'εγώ',pres:'πάω',fut:'θα πάω',ph:'tha páo'},
+  {pr:'εσύ',pres:'πας',fut:'θα πας',ph:'tha pas'},
+  {pr:'αυτός/ή',pres:'πάει',fut:'θα πάει',ph:'tha páei'},
+  {pr:'εμείς',pres:'πάμε',fut:'θα πάμε',ph:'tha páme'},
+  {pr:'εσείς',pres:'πάτε',fut:'θα πάτε',ph:'tha páte'},
+  {pr:'αυτοί',pres:'πάνε',fut:'θα πάνε',ph:'tha páne'},
+];
+
+const turns=[
+  {
+    id:1,
+    elena:{gk:'Γεια! Τι κάνεις; Θέλεις να βγούμε αυτό το Σαββατοκύριακο;',ph:'Yéia! Ti kánis? Théleis na vgoúme aftó to Savvatokíriako?',fr:'Salut ! Comment ça va ? Tu veux qu\'on sorte ce week-end ?'},
+    chips:['Ναι, με χαρά !','Λυπάμαι, δεν μπορώ','Ίσως, τι θέλεις να κάνουμε;','Γεια ! Καλά, εσύ;'],
+    tip:'<strong>Θέλεις να βγούμε;</strong> = Tu veux qu\'on sorte ? · <strong>Ναι, με χαρά!</strong> = Oui avec plaisir ! · <strong>Λυπάμαι</strong> = Désolé(e)'
+  },
+  {
+    id:2,
+    elena:{gk:'Σκέφτομαι να πάμε σινεμά. Υπάρχει μια καλή ταινία.',ph:'Skéftome na páme sinemá. Ipárchi mia kalí tenía.',fr:'Je pense qu\'on pourrait aller au cinéma. Il y a un bon film.'},
+    chips:['Ωραία ιδέα !','Τι ταινία;','Προτιμώ να πάμε αλλού','Πότε;'],
+    tip:'<strong>Ωραία ιδέα!</strong> (oréa idéa) = Bonne idée ! · <strong>Τι ταινία;</strong> = Quel film ? · <strong>Προτιμώ</strong> = Je préfère'
+  },
+  {
+    id:3,
+    elena:{gk:'Στις οχτώ το βράδυ. Μπορείς;',ph:'Stis ochtó to vrádi. Borís?',fr:'À 8h du soir. Tu peux ?'},
+    chips:['Ναι, μπορώ !','Δεν μπορώ στις οχτώ','Μπορείς στις εννιά;','Εντάξει, στις οχτώ'],
+    tip:'<strong>Μπορώ</strong> (boró) = je peux · <strong>Δεν μπορώ</strong> = je ne peux pas · <strong>Μπορείς στις…;</strong> = Tu peux à… ?'
+  },
+  {
+    id:4,
+    elena:{gk:'Πού θα συναντηθούμε; Μπροστά στο σινεμά;',ph:'Pu tha sinandithúme? Brostá sto sinemá?',fr:'Où est-ce qu\'on se retrouve ? Devant le cinéma ?'},
+    chips:['Ναι, μπροστά στο σινεμά','Προτιμώ στο μετρό','Εντάξει, τα λέμε!','Καλά, θα είμαι εκεί'],
+    tip:'<strong>Εντάξει</strong> (endáxi) = D\'accord · <strong>Τα λέμε!</strong> = On se dit à bientôt ! · <strong>Θα είμαι εκεί</strong> = J\'y serai'
+  },
+  {
+    id:5,
+    elena:{gk:'Τέλεια! Μέχρι το Σάββατο! Θα είναι ωραία βραδιά!',ph:'Télia! Méchri to Sávvato! Tha íne oréa vradiá!',fr:'Super ! À samedi ! Ça va être une belle soirée !'},
+    chips:['Ανυπομονώ !','Εγώ επίσης !','Τα λέμε !','Καλή βραδιά !'],
+    tip:'<strong>Ανυπομονώ!</strong> (anipmonó) = J\'ai hâte ! · <strong>Εγώ επίσης</strong> = Moi aussi · <strong>Τα λέμε</strong> = À bientôt !'
+  },
+];
+
+const summaryExprs=[
+  {greek:'Θέλεις να πάμε… ;',fr:'Tu veux qu\'on aille… ?'},
+  {greek:'Ναι, με χαρά !',fr:'Oui, avec plaisir !'},
+  {greek:'Λυπάμαι, δεν μπορώ.',fr:'Désolé(e), je ne peux pas.'},
+  {greek:'Τι ώρα ; / Πού ;',fr:'À quelle heure ? / Où ?'},
+  {greek:'Εντάξει, τα λέμε !',fr:'D\'accord, à bientôt !'},
+  {greek:'Ανυπομονώ !',fr:'J\'ai hâte !'},
+];
+
+const textLines=[
+  {gk:'Η Έλενα τηλεφωνεί στη φίλη της τη Μαρία.',ph:'I Élena tilefoní sti fíli tis ti María.',fr:'Elena appelle son amie Maria au téléphone.'},
+  {gk:'"Θέλεις να βγούμε αύριο το βράδυ; Θα πάμε σε μια συναυλία!"',ph:'"Théleis na vgoúme ávrio to vrádi? Tha páme se mia sinavlía!"',fr:'"Tu veux qu\'on sorte demain soir ? On ira à un concert !"'},
+  {gk:'"Ναι, με χαρά! Τι ώρα και πού θα συναντηθούμε;"',ph:'"Ne, me chará! Ti óra ke pu tha sinandithúme?"',fr:'"Oui, avec plaisir ! À quelle heure et où est-ce qu\'on se retrouve ?"'},
+  {gk:'"Στις εννιά, μπροστά στο θέατρο. Θα είναι υπέροχα!"',ph:'"Stis enniá, brostá sto théatro. Tha íne iperócha!"',fr:'"À 9h, devant le théâtre. Ce sera magnifique !"'},
+];
+
+const compData=[
+  {fr:'Qui appelle qui ?',gk:'Ποια τηλεφωνεί;',opts:['Maria appelle Elena','Elena appelle Maria','Elena appelle Nikos','Maria appelle Nikos'],correct:1,fb:'Ligne 1 : Η Έλενα τηλεφωνεί στη φίλη της τη Μαρία.'},
+  {fr:'Que propose Elena ?',gk:'Τι προτείνει η Έλενα;',opts:['Aller au cinéma','Aller au restaurant','Sortir à un concert','Aller au théâtre'],correct:2,fb:'Ligne 2 : Θα πάμε σε μια συναυλία = on ira à un concert.'},
+  {fr:'À quelle heure est le rendez-vous ?',gk:'Τι ώρα είναι το ραντεβού;',opts:['À 8h','À 9h','À 10h','À 7h30'],correct:1,fb:'Ligne 4 : Στις εννιά = à 9h.'},
+  {fr:'Où est le rendez-vous ?',gk:'Πού θα συναντηθούν;',opts:['Devant le cinéma','Au métro','Devant le théâtre','Au café'],correct:2,fb:'Ligne 4 : μπροστά στο θέατρο = devant le théâtre.'},
+];
+
+const quizData=[
+  {q:'Comment inviter quelqu\'un au cinéma ?',ctx:'',opts:['Θέλεις να πάμε σινεμά;','Πάω στο σινεμά.','Βλέπω ταινία.','Μου αρέσει το σινεμά.'],correct:0,fb:'Θέλεις να πάμε σινεμά; = Tu veux qu\'on aille au cinéma ? Structure : θέλεις να + subjonctif.'},
+  {q:'Comment dit-on "je ne peux pas" ?',ctx:'',opts:['Δεν θέλω','Δεν μπορώ','Λυπάμαι','Δεν πάω'],correct:1,fb:'Δεν μπορώ = je ne peux pas. μπορώ = je peux (verbe μπορώ).'},
+  {q:'Que signifie "θα" devant un verbe ?',ctx:'Ex : θα πάμε',opts:['Ne pas faire','Marque le futur','Marque le passé','Marque l\'obligation'],correct:1,fb:'θα + verbe = futur. Θα πάμε = nous irons / on y va (futur).'},
+  {q:'Comment dit-on "avec plaisir" ?',ctx:'Pour accepter une invitation.',opts:['Λυπάμαι','Εντάξει','Με χαρά','Ανυπομονώ'],correct:2,fb:'Με χαρά! = Avec plaisir ! χαρά = joie, plaisir.'},
+  {q:'Conjugue πάω : "nous irons"',ctx:'',opts:['Θα πάω','Θα πάς','Θα πάμε','Θα πάτε'],correct:2,fb:'Θα πάμε = nous irons. πάμε = nous allons (présent), θα πάμε (futur).'},
+  {q:'Comment demander "où est-ce qu\'on se retrouve ?" ?',ctx:'',opts:['Τι ώρα;','Πού είσαι;','Πού θα συναντηθούμε;','Πώς πάμε;'],correct:2,fb:'Πού θα συναντηθούμε; = Où est-ce qu\'on se retrouve ? Mot à mot : "où nous rencontrerons-nous ?"'},
+  {q:'Comment dit-on "désolé(e)" en grec ?',ctx:'Pour refuser poliment.',opts:['Εντάξει','Βεβαίως','Λυπάμαι','Ανυπομονώ'],correct:2,fb:'Λυπάμαι (lípame) = je suis désolé(e). Vient de λύπη = tristesse, peine.'},
+  {q:'Que signifie "Βεβαίως !" ?',ctx:'Réponse à une invitation.',opts:['Peut-être','Jamais','Bien sûr !','Je ne sais pas'],correct:2,fb:'Βεβαίως = Bien sûr ! C\'est une acceptation très affirmative, plus formelle que ναι.'},
+  {q:'Comment dire "j\'ai hâte !" en grec ?',ctx:'',opts:['Τα λέμε !','Ανυπομονώ !','Εντάξει !','Με χαρά !'],correct:1,fb:'Ανυπομονώ! (anipmonó) = J\'ai hâte ! Vient du verbe ανυπομονώ = être impatient(e).'},
+  {q:'Que signifie "Τα λέμε !" ?',ctx:'En fin de conversation.',opts:['Bonne nuit !','À plus tard / À bientôt !','Bonne chance !','Merci beaucoup !'],correct:1,fb:'Τα λέμε = litt. "on se les dit" → À bientôt ! Expression très courante pour conclure une conversation.'},
+  {q:'Comment dit-on "le soir" en grec ?',ctx:'',opts:['το πρωί','το μεσημέρι','το απόγευμα','το βράδυ'],correct:3,fb:'το βράδυ (to vrádi) = le soir. το πρωί = le matin, το μεσημέρι = le midi, το απόγευμα = l\'après-midi.'},
+  {q:'Conjugue πάω : "tu iras"',ctx:'',opts:['Θα πάω','Θα πας','Θα πάει','Θα πάτε'],correct:1,fb:'Θα πας = tu iras. La 2e personne du singulier de πάω perd l\'accent : πάω → πας.'},
+  {q:'Comment dire "d\'accord" en grec ?',ctx:'',opts:['Λυπάμαι','Εντάξει','Βεβαίως','Ανυπομονώ'],correct:1,fb:'Εντάξει (endáxi) = D\'accord, OK. Mot très fréquent dans les conversations quotidiennes.'},
+  {q:'Que signifie "μπροστά στο σινεμά" ?',ctx:'Pour préciser un lieu de rendez-vous.',opts:['Dans le cinéma','Après le cinéma','Devant le cinéma','À côté du cinéma'],correct:2,fb:'μπροστά = devant. μπροστά στο σινεμά = devant le cinéma. Outil très utile pour les rendez-vous !'},
+  {q:'Quelle phrase exprime "peut-être plus tard ?" ?',ctx:'Pour proposer un autre moment.',opts:['Δεν μπορώ ποτέ.','Ίσως αργότερα;','Δεν θέλω.','Είμαι απασχολημένος.'],correct:1,fb:'Ίσως αργότερα; (ísos argótera?) = Peut-être plus tard ? ίσως = peut-être, αργότερα = plus tard.'},
+];
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let currentTurn=0,transcript='',quizAnswers={},compAnswers={},dialogueComplete=false;
+let speechRate=0.75,isPlayingAll=false,playIndex=-1,transHidden=false,dialogueStarted=false;
+
+// ─── SPEECH ───────────────────────────────────────────────────────────────────
+function speak(text){
+  if(!window.speechSynthesis)return;
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='el-GR';u.rate=0.85;window.speechSynthesis.speak(u);
+}
+
+// ─── VOCAB ────────────────────────────────────────────────────────────────────
+function buildVocab(){
+  const g=document.getElementById('vocabGrid');
+  vocab.forEach(v=>{
+    const c=document.createElement('div');c.className='vc';
+    c.innerHTML=`<button class="spk" onclick="event.stopPropagation();speak('${v.greek.replace(/'/g,"\\'")}')">🔊</button><div class="gk">${v.greek}</div><div class="ph">${v.ph}</div><div class="fr">${v.fr}</div>`;
+    c.onclick=()=>c.classList.toggle('flip');g.appendChild(c);
+  });
+}
+
+// ─── AGENDA ───────────────────────────────────────────────────────────────────
+function buildAgenda(){
+  const grid=document.getElementById('daysGrid');
+  agendaDays.forEach(d=>{
+    const col=document.createElement('div');col.className='day-col';
+    let actHtml=d.activities.map((a,i)=>`<button class="activity-slot" style="background:${a.color};color:${a.textColor}" onclick="selectActivity(${agendaDays.indexOf(d)},${i})">${a.text}</button>`).join('');
+    col.innerHTML=`<div class="day-header">${d.day}</div><div class="day-num">${d.num}</div>${actHtml}`;
+    grid.appendChild(col);
+  });
+  const mt=document.getElementById('momentsTable');
+  moments.forEach(m=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td class="gk-col">${m.gk} <button class="aud" onclick="speak('${m.gk.replace(/'/g,"\\'")}')">🔊</button></td><td style="font-style:italic;font-size:12px;color:#888">${m.ph}</td><td style="font-size:12px;color:#555">${m.fr}</td>`;
+    mt.appendChild(tr);
+  });
+}
+
+function selectActivity(dayIdx,actIdx){
+  const act=agendaDays[dayIdx].activities[actIdx];
+  const day=agendaDays[dayIdx];
+  speak(act.gk);
+  document.getElementById('invitePanel').innerHTML=`
+    <div class="invite-title">📅 ${day.day} ${day.num} — ${act.text}</div>
+    <div class="invite-info">Pour inviter quelqu'un :</div>
+    <div class="invite-gk">${act.gk} <button class="aud" onclick="speak('${act.gk.replace(/'/g,"\\'")}')">🔊</button></div>
+    <div class="invite-ph">${act.ph}</div>
+    <div style="font-size:12px;color:#555;margin-top:4px">${act.fr}</div>
+    <div style="margin-top:10px;font-size:12px;color:#1a3a6e;background:#eef3fc;padding:8px 10px;border-radius:6px">
+      💬 Pour accepter : <strong>Ναι, με χαρά!</strong> · Pour refuser : <strong>Λυπάμαι, δεν μπορώ.</strong>
+    </div>`;
+}
+
+// ─── GRAMMAIRE ────────────────────────────────────────────────────────────────
+function buildGrammar(){
+  const ft=document.getElementById('futureTable');
+  futureData.forEach(r=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td style="color:#888;font-size:13px">${r.pres}</td><td class="gk-col">${r.fut} <button class="aud" onclick="speak('${r.fut.replace(/'/g,"\\'")}')">🔊</button></td><td style="font-style:italic;font-size:11px;color:#888">${r.ph}</td><td style="font-size:12px;color:#555">${r.fr}</td>`;
+    ft.appendChild(tr);
+  });
+  const et=document.getElementById('expressionsTable');
+  expressions.forEach(e=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td class="gk-col" style="font-size:13px">${e.gk} <button class="aud" onclick="speak('${e.gk.replace(/'/g,"\\'")}')">🔊</button></td><td style="font-style:italic;font-size:11px;color:#888">${e.ph}</td><td style="font-size:12px;color:#555">${e.fr}</td><td style="font-size:11px;padding:4px 6px;border-radius:4px;background:#f0f0f0;color:#555;white-space:nowrap">${e.cat}</td>`;
+    et.appendChild(tr);
+  });
+  const ct=document.getElementById('conjTable');
+  conjData.forEach(r=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td style="color:#888;font-size:13px">${r.pr}</td><td class="gk-col">${r.pres} <button class="aud" onclick="speak('${r.pres}')">🔊</button></td><td class="gk-col">${r.fut} <button class="aud" onclick="speak('${r.fut}')">🔊</button></td><td style="font-style:italic;font-size:11px;color:#888">${r.ph}</td>`;
+    ct.appendChild(tr);
+  });
+}
+
+// ─── DIALOGUE ─────────────────────────────────────────────────────────────────
+function addMessage(who,gk,ph,fr,speakNow=false){
+  const chat=document.getElementById('chatMessages');
+  const div=document.createElement('div');
+  div.className='msg '+(who==='elena'?'':'user');
+  const bubClass=who==='elena'?'elena-bubble':'user-bubble';
+  const avClass=who==='elena'?'elena':'user-av';
+  const avLabel=who==='elena'?'EL':'Tu';
+  const speakBtn=who==='elena'?`<br><button class="speak-line" onclick="speak('${gk.replace(/'/g,"\\'")}')">🔊 Écouter</button>`:'';
+  div.innerHTML=`<div class="msg-avatar ${avClass}">${avLabel}</div><div class="bubble ${bubClass}">${gk}${ph?`<div class="ph">${ph}</div>`:''}${fr?`<div class="fr">${fr}</div>`:''}${speakBtn}</div>`;
+  chat.appendChild(div);chat.scrollTop=chat.scrollHeight;
+  if(speakNow&&who==='elena')setTimeout(()=>speak(gk),300);
+}
+
+async function addCorrectionCard(userText,turnObj){
+  const area=document.getElementById('correctionArea');
+  const card=document.createElement('div');card.className='gcard';card.style.marginBottom='10px';
+  card.innerHTML=`<div class="gtitle">✏️ Correction — Question ${currentTurn}</div><div style="padding:10px;font-size:13px;color:#888"><span style="display:inline-block;width:14px;height:14px;border:2px solid #1a3a6e;border-top-color:transparent;border-radius:50%;animation:spin .7s linear infinite;vertical-align:-3px;margin-right:6px"></span>Analyse en cours…</div>`;
+  area.appendChild(card);card.scrollIntoView({behavior:'smooth',block:'nearest'});
+
+  const systemPrompt=`Tu es un professeur de grec moderne. L'apprenant répond à une invitation sociale en grec (sortie, rendez-vous).
+Il répond en phonétique latine ou en grec.
+Tu dois :
+1. Transcrire sa réponse en alphabet grec (si phonétique).
+2. Identifier les erreurs grammaticales ou de vocabulaire (s'il y en a).
+3. Proposer la version correcte en grec.
+4. Donner une explication courte en français (max 2 phrases).
+Réponds UNIQUEMENT en JSON valide sans markdown :
+{"transcription":"...","has_error":true/false,"errors":[],"corrected":"...","explanation":"..."}`;
+
+  const userPrompt=`Contexte : conversation sociale pour organiser une sortie. Elena dit : "${turnObj.elena.fr}"\nRéponse de l'apprenant : "${userText}"\nTranscris et corrige.`;
+
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:500,system:systemPrompt,messages:[{role:'user',content:userPrompt}]})});
+    const data=await resp.json();
+    const raw=data.content.find(b=>b.type==='text')?.text||'{}';
+    let result;
+    try{result=JSON.parse(raw);}catch(e){result=JSON.parse(raw.replace(/```json|```/g,'').trim());}
+    const transcGk=result.transcription||userText;
+    const corrected=result.corrected||transcGk;
+    const hasError=result.has_error||false;
+    const errors=result.errors||[];
+    const explanation=result.explanation||'';
+    const errorBlock=hasError
+      ?`<div style="background:#fff3cd;border-left:3px solid #ffc107;border-radius:0 6px 6px 0;padding:8px 12px;margin:8px 0;font-size:13px;color:#856404">⚠️ <strong>Erreur(s) :</strong><br>${errors.map(e=>`• ${e}`).join('<br>')}</div>`
+      :`<div style="background:#d4edda;border-left:3px solid #28a745;border-radius:0 6px 6px 0;padding:8px 12px;margin:8px 0;font-size:13px;color:#155724">✅ Bonne réponse !</div>`;
+    card.innerHTML=`
+      <div class="gtitle">✏️ Correction — Question ${currentTurn}</div>
+      <table style="width:100%;font-size:13px;border-collapse:collapse">
+        <tr style="border-bottom:1px solid #f0f0f0"><td style="padding:7px 10px;color:#888;width:36%;vertical-align:top">Ta réponse</td><td style="padding:7px 10px;font-style:italic;color:#555">${userText}</td></tr>
+        <tr style="border-bottom:1px solid #f0f0f0"><td style="padding:7px 10px;color:#888;vertical-align:top">→ En grec</td><td style="padding:7px 10px;color:#1a3a6e;font-weight:600;font-size:15px">${transcGk} <button class="aud" onclick="speak('${transcGk.replace(/'/g,"\\'")}')">🔊</button></td></tr>
+        ${hasError?`<tr><td style="padding:7px 10px;color:#888;vertical-align:top">Version correcte</td><td style="padding:7px 10px;color:#1a3a6e;font-weight:600;font-size:15px">${corrected} <button class="aud" onclick="speak('${corrected.replace(/'/g,"\\'")}')">🔊</button></td></tr>`:''}
+      </table>
+      ${errorBlock}
+      <div class="tipbox">💡 ${explanation||turnObj.tip}</div>`;
+    card.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }catch(err){
+    card.innerHTML=`<div class="gtitle">✏️ Correction — Question ${currentTurn}</div><div style="padding:10px;font-size:13px;color:#888">Ta réponse : <em>${userText}</em></div><div class="tipbox">💡 ${turnObj.tip}</div>`;
+  }
+}
+
+function onTypeAnswer(val){transcript=val.trim();document.getElementById('sendBtn').disabled=transcript.length===0;}
+function onEnterSend(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();if(transcript.trim().length>0)sendAnswer();}}
+
+function sendAnswer(){
+  const box=document.getElementById('transcriptBox');
+  transcript=box.value.trim();if(!transcript)return;
+  const turn=turns[currentTurn];
+  addMessage('user',transcript,'','');
+  addCorrectionCard(transcript,turn);
+  currentTurn++;updateProgressSteps();
+  transcript='';box.value='';document.getElementById('sendBtn').disabled=true;box.focus();
+  if(currentTurn<turns.length){
+    setTimeout(()=>{const next=turns[currentTurn];addMessage('elena',next.elena.gk,next.elena.ph,next.elena.fr,true);showHints(next.chips);},1200);
+  }else{
+    dialogueComplete=true;
+    setTimeout(()=>{
+      addMessage('elena','Τέλεια! Τα λέμε το Σάββατο! 🎉','Télia! Ta léme to Sávvato!','Super ! On se dit à samedi !',true);
+      document.getElementById('nextQuizBtn').style.display='block';
+      document.getElementById('hintChips').style.display='none';
+    },1200);
+  }
+}
+
+function showHints(chips){
+  const area=document.getElementById('hintChips');area.innerHTML='';
+  chips.forEach(c=>{
+    const span=document.createElement('span');span.className='chip';span.textContent=c;
+    span.onclick=()=>{const box=document.getElementById('transcriptBox');box.value=c;transcript=c;document.getElementById('sendBtn').disabled=false;box.focus();};
+    area.appendChild(span);
+  });
+  area.style.display='flex';
+}
+
+function updateProgressSteps(){
+  const cont=document.getElementById('progressSteps');cont.innerHTML='';
+  turns.forEach((_,i)=>{const s=document.createElement('div');s.className='step '+(i<currentTurn?'done':i===currentTurn?'current':'');cont.appendChild(s);});
+  const lbl=document.createElement('span');lbl.className='step-label';lbl.textContent=`Question ${Math.min(currentTurn+1,turns.length)} / ${turns.length}`;cont.appendChild(lbl);
+  document.getElementById('prog').style.width=(50+(currentTurn/turns.length)*40)+'%';
+}
+
+function startDialogue(){
+  updateProgressSteps();
+  setTimeout(()=>{addMessage('elena',turns[0].elena.gk,turns[0].elena.ph,turns[0].elena.fr,true);showHints(turns[0].chips);},500);
+}
+
+// ─── QUIZ ─────────────────────────────────────────────────────────────────────
+function buildQuiz(){
+  const cont=document.getElementById('quizContainer');
+  quizData.forEach((q,qi)=>{
+    const card=document.createElement('div');card.className='qcard';
+    const opts=q.opts.map((o,oi)=>`<button class="qopt" id="qo-${qi}-${oi}" onclick="answerQuiz(${qi},${oi})">${o}</button>`).join('');
+    card.innerHTML=`<div class="qq">Q${qi+1}. ${q.q}</div>${q.ctx?`<div class="qctx">${q.ctx}</div>`:''}<div class="qopts">${opts}</div><div class="qfb" id="qf-${qi}"></div>`;
+    cont.appendChild(card);
+  });
+}
+function answerQuiz(qi,oi){
+  if(quizAnswers[qi]!==undefined)return;quizAnswers[qi]=oi;
+  const c=quizData[qi].correct;
+  document.getElementById('qo-'+qi+'-'+c).classList.add('ok');
+  const fb=document.getElementById('qf-'+qi);
+  if(oi===c){fb.textContent='✓ '+quizData[qi].fb;fb.className='qfb show good';}
+  else{document.getElementById('qo-'+qi+'-'+oi).classList.add('ko');fb.textContent='✗ '+quizData[qi].fb;fb.className='qfb show bad';}
+  const ok=Object.entries(quizAnswers).filter(([k,v])=>quizData[k].correct===v).length;
+  document.getElementById('quizScore').textContent=`Score : ${ok} / ${Object.keys(quizAnswers).length}`;
+}
+
+// ─── RÉSUMÉ ───────────────────────────────────────────────────────────────────
+function buildSummary(){
+  const cont=document.getElementById('summaryExprs');
+  summaryExprs.forEach(e=>{
+    const row=document.createElement('div');row.className='erow';
+    row.innerHTML=`<span class="e-gk">${e.greek} <button class="aud" onclick="speak('${e.greek.replace(/'/g,"\\'")}')">🔊</button></span><span class="e-fr">${e.fr}</span>`;
+    cont.appendChild(row);
+  });
+  buildTextBlock();buildCompQuestions();
+}
+
+// ─── TEXTE ────────────────────────────────────────────────────────────────────
+function buildTextBlock(){
+  const block=document.getElementById('textBlock');
+  textLines.forEach((l,i)=>{
+    const div=document.createElement('div');div.className='text-line';div.id='tline-'+i;
+    div.onclick=()=>speakLine(i);
+    div.innerHTML=`<div class="line-num">${i+1}</div><div class="line-content"><div class="gk">${l.gk}</div><div class="ph" id="ph-${i}">${l.ph}</div><div class="fr" id="fr-${i}">${l.fr}</div></div>`;
+    block.appendChild(div);
+  });
+}
+function speakLine(i){
+  window.speechSynthesis.cancel();
+  document.querySelectorAll('.text-line').forEach(l=>l.classList.remove('highlight'));
+  document.getElementById('tline-'+i).classList.add('highlight');
+  const u=new SpeechSynthesisUtterance(textLines[i].gk);u.lang='el-GR';u.rate=speechRate;
+  u.onend=()=>document.getElementById('tline-'+i).classList.remove('highlight');
+  window.speechSynthesis.speak(u);
+}
+function setSpeed(rate,btnId){speechRate=rate;document.querySelectorAll('.speed-btn').forEach(b=>b.classList.remove('active'));document.getElementById(btnId).classList.add('active');}
+function playAll(){
+  if(isPlayingAll){window.speechSynthesis.cancel();isPlayingAll=false;playIndex=-1;document.getElementById('playAllBtn').textContent='▶ Écouter tout le texte';document.getElementById('playAllBtn').className='play-btn';document.querySelectorAll('.text-line').forEach(l=>l.classList.remove('highlight'));return;}
+  isPlayingAll=true;playIndex=0;document.getElementById('playAllBtn').textContent='⏹ Arrêter';document.getElementById('playAllBtn').className='play-btn playing';playNextLine();
+}
+function playNextLine(){
+  if(!isPlayingAll||playIndex>=textLines.length){isPlayingAll=false;playIndex=-1;document.getElementById('playAllBtn').textContent='▶ Réécouter';document.getElementById('playAllBtn').className='play-btn';document.querySelectorAll('.text-line').forEach(l=>l.classList.remove('highlight'));return;}
+  document.querySelectorAll('.text-line').forEach(l=>l.classList.remove('highlight'));
+  const el=document.getElementById('tline-'+playIndex);
+  if(el){el.classList.add('highlight');el.scrollIntoView({behavior:'smooth',block:'nearest'});}
+  const u=new SpeechSynthesisUtterance(textLines[playIndex].gk);u.lang='el-GR';u.rate=speechRate;
+  u.onend=()=>{if(el)el.classList.remove('highlight');playIndex++;setTimeout(playNextLine,400);};
+  window.speechSynthesis.speak(u);
+}
+function toggleHideTrans(){
+  transHidden=!transHidden;
+  const btn=document.getElementById('hideTransBtn');
+  textLines.forEach((_,i)=>{const fr=document.getElementById('fr-'+i);const ph=document.getElementById('ph-'+i);if(fr)fr.style.display=transHidden?'none':'';if(ph)ph.style.display=transHidden?'none':'';});
+  btn.textContent=transHidden?'👁 Afficher traductions':'👁 Masquer traductions';btn.className=transHidden?'hide-btn hidden-mode':'hide-btn';
+}
+
+// ─── COMPRÉHENSION ────────────────────────────────────────────────────────────
+function buildCompQuestions(){
+  const cont=document.getElementById('compQuestions');
+  compData.forEach((q,qi)=>{
+    const div=document.createElement('div');div.className='comp-q';
+    const opts=q.opts.map((o,oi)=>`<button class="comp-opt" id="co-${qi}-${oi}" onclick="answerComp(${qi},${oi})">${o}</button>`).join('');
+    div.innerHTML=`<div class="comp-question">Q${qi+1}. ${q.fr}</div><div class="comp-greek">${q.gk}</div><div class="comp-opts">${opts}</div><div class="comp-fb" id="cf-${qi}"></div>`;
+    cont.appendChild(div);
+  });
+}
+function answerComp(qi,oi){
+  if(compAnswers[qi]!==undefined)return;compAnswers[qi]=oi;
+  const c=compData[qi].correct;
+  document.getElementById('co-'+qi+'-'+c).classList.add('ok');
+  const fb=document.getElementById('cf-'+qi);
+  if(oi===c){fb.textContent='✓ '+compData[qi].fb;fb.className='comp-fb show good';}
+  else{document.getElementById('co-'+qi+'-'+oi).classList.add('ko');fb.textContent='✗ '+compData[qi].fb;fb.className='comp-fb show bad';}
+  const ok=Object.entries(compAnswers).filter(([k,v])=>compData[k].correct==v).length;
+  const pct=Math.round(ok/compData.length*100);
+  document.getElementById('compFill').style.width=pct+'%';
+  document.getElementById('compScoreLabel').textContent=`Compréhension : ${ok} / ${Object.keys(compAnswers).length} — ${pct}%`;
+}
+
+function updateSummary(){
+  const ok=Object.entries(quizAnswers).filter(([k,v])=>quizData[k].correct===v).length;
+  const compOk=Object.entries(compAnswers).filter(([k,v])=>compData[k].correct==v).length;
+  document.getElementById('summaryScore').innerHTML=`
+    ${dialogueComplete?'✅ Dialogue avec Elena complété (5 échanges)':'⏳ Dialogue non terminé'}<br>
+    Quiz grammaire : <strong>${ok} / ${quizData.length}</strong><br>
+    Compréhension orale : <strong>${compOk} / ${compData.length}</strong><br>
+    Vocabulaire : ${vocab.length} mots · agenda interactif exploré<br><br>
+    ${ok>=5&&compOk>=3&&dialogueComplete?'🌟 Parfait ! Tu saurais inviter quelqu\'un en grec !':ok>=4?'👍 Très bien ! Pratique encore les formules d\'invitation.':'💪 Réécoute le texte et revois θα + verbe !'}
+  `;
+}
+
+// ─── NAVIGATION ───────────────────────────────────────────────────────────────
+function showTab(id,btn,prog){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');btn.classList.add('active');
+  document.getElementById('prog').style.width=prog+'%';
+  if(id==='dialogue'&&!dialogueStarted){dialogueStarted=true;startDialogue();}
+  if(id==='summary')updateSummary();
+}
+
+buildVocab();buildAgenda();buildGrammar();buildQuiz();buildSummary();
+</script>
+</body>
+</html>

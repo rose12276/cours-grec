@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grec Leçon 1 — La routine du matin</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#f5f7fa;padding:1rem}
+.app{max-width:720px;margin:0 auto}
+.header{background:linear-gradient(135deg,#1a5fa8 0%,#0d3d6e 100%);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;color:white;display:flex;align-items:center;justify-content:space-between}
+.header h1{font-size:20px;font-weight:500;color:white;margin-bottom:4px}
+.sub{font-size:13px;opacity:.75}
+.prog-bar{height:5px;background:rgba(255,255,255,.2);border-radius:3px;margin-top:10px}
+.prog-fill{height:100%;background:#60c8f5;border-radius:3px;transition:width .5s}
+.nav{display:flex;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap}
+.tab{flex:1;min-width:70px;padding:8px 4px;font-size:12px;border:1px solid #ddd;border-radius:8px;cursor:pointer;background:white;color:#666;transition:all .2s;font-family:inherit;text-align:center}
+.tab.active{background:#1a5fa8;color:white;border-color:#1a5fa8}
+.sec{display:none}.sec.active{display:block}
+.section-label{font-size:13px;color:#888;margin-bottom:12px}
+.vocab-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem}
+.vc{background:white;border:1px solid #ddd;border-radius:10px;padding:10px 14px;cursor:pointer;transition:all .18s;position:relative}
+.vc:hover{border-color:#1a5fa8}
+.vc .gk{font-size:15px;font-weight:600;color:#1a5fa8}
+.vc .ph{font-size:11px;color:#888;font-style:italic;margin:2px 0}
+.vc .fr{font-size:13px;color:#333}
+.vc .spk{position:absolute;top:8px;right:10px;background:none;border:none;cursor:pointer;color:#1a5fa8;font-size:15px;padding:0}
+.vc.flip{background:#e8f2fb}
+.gcard{background:white;border:1px solid #ddd;border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem}
+.gtitle{font-size:12px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px}
+.ctable{width:100%;border-collapse:collapse;font-size:13px}
+.ctable td,.ctable th{padding:7px 10px;text-align:left;border-bottom:1px solid #f0f0f0}
+.ctable th{font-weight:600;color:#888;font-size:12px}
+.gk-col{color:#1a5fa8;font-weight:600;font-size:14px}
+.end{color:#c0392b}
+.tipbox{background:#e8f2fb;border-left:3px solid #1a5fa8;border-radius:0 8px 8px 0;padding:10px 14px;font-size:13px;color:#0d3d6e;margin-top:10px}
+.aud{color:#1a5fa8;cursor:pointer;font-size:14px;background:none;border:none;padding:0 3px}
+.dbox{background:#f5f7fa;border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem}
+.dline{display:flex;gap:10px;margin-bottom:12px;align-items:flex-start}
+.dline:last-child{margin-bottom:0}
+.dbubble{min-width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:white;flex-shrink:0;margin-top:2px}
+.sp-a{background:#1a5fa8}.sp-b{background:#0d7a4e}
+.d-gk{font-size:14px;font-weight:500;color:#111;line-height:1.5}
+.d-ph{font-size:11px;color:#888;font-style:italic;margin:1px 0}
+.d-fr{font-size:12px;color:#888}
+.d-aud{background:none;border:none;cursor:pointer;color:#1a5fa8;font-size:14px;padding:0 2px;vertical-align:middle}
+.rp-area{background:#f5f7fa;border-radius:12px;padding:1rem 1.25rem}
+.rp-input{width:100%;border:1px solid #ddd;border-radius:8px;padding:10px 14px;font-size:14px;font-family:inherit;color:#333;background:white;resize:none;min-height:70px;outline:none}
+.rp-input:focus{border-color:#1a5fa8}
+.rp-hints{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.hint{padding:4px 10px;background:#e8f2fb;color:#1a5fa8;border-radius:20px;font-size:12px;cursor:pointer;border:1px solid #b5d4f4}
+.hint:hover{background:#b5d4f4}
+.qcard{background:white;border:1px solid #ddd;border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+.qq{font-size:15px;font-weight:500;color:#111;margin-bottom:4px}
+.qctx{font-size:13px;color:#888;margin-bottom:12px;font-style:italic}
+.qopts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.qopt{padding:9px 14px;font-size:13px;border:1px solid #ddd;border-radius:8px;cursor:pointer;background:white;color:#333;text-align:left;transition:all .18s;font-family:inherit}
+.qopt:hover{border-color:#1a5fa8;background:#e8f2fb}
+.qopt.ok{background:#d4edda;border-color:#28a745;color:#155724}
+.qopt.ko{background:#f8d7da;border-color:#dc3545;color:#721c24}
+.qfb{margin-top:10px;font-size:13px;padding:8px 12px;border-radius:8px;display:none}
+.qfb.show{display:block}
+.qfb.good{background:#d4edda;color:#155724}
+.qfb.bad{background:#f8d7da;color:#721c24}
+.scard{background:white;border:1px solid #ddd;border-radius:12px;padding:1rem 1.25rem;margin-bottom:10px}
+.erow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:14px}
+.erow:last-child{border-bottom:none}
+.e-gk{color:#1a5fa8;font-weight:600}
+.e-fr{color:#888;font-size:13px}
+.text-block{background:#e8f2fb;border-radius:10px;padding:1rem;margin-bottom:8px}
+.text-controls{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.play-btn{padding:9px 16px;background:#1a5fa8;color:white;border:none;border-radius:8px;cursor:pointer;font-size:14px;font-family:inherit;font-weight:500}
+.play-btn.playing{background:#dc3545}
+.speed-btn{padding:7px 12px;border:1px solid #ddd;border-radius:8px;cursor:pointer;font-size:13px;font-family:inherit;background:white;color:#555}
+.speed-btn.active{background:#e8f2fb;border-color:#1a5fa8;color:#1a5fa8;font-weight:600}
+.hide-btn{padding:7px 12px;border:1px solid #ddd;border-radius:8px;cursor:pointer;font-size:12px;font-family:inherit;background:white;color:#555}
+.hide-btn.hidden-mode{background:#fff3cd;border-color:#ffc107;color:#856404}
+.text-line{display:flex;gap:10px;padding:6px 8px;border-radius:8px;cursor:pointer;transition:background .15s;margin-bottom:6px}
+.text-line:hover{background:#b5d4f4}
+.text-line.highlight{background:#60c8f5}
+.text-line:last-child{margin-bottom:0}
+.line-num{min-width:22px;height:22px;border-radius:50%;background:#1a5fa8;color:white;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.comp-q{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid #f0f0f0}
+.comp-q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.comp-question{font-size:14px;font-weight:500;color:#111;margin-bottom:4px}
+.comp-greek{font-size:12px;color:#1a5fa8;font-style:italic;margin-bottom:8px}
+.comp-opts{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.comp-opt{padding:8px 12px;font-size:13px;border:1px solid #ddd;border-radius:8px;cursor:pointer;background:white;color:#333;text-align:left;font-family:inherit;transition:all .18s}
+.comp-opt:hover{border-color:#1a5fa8;background:#e8f2fb}
+.comp-opt.ok{background:#d4edda;border-color:#28a745;color:#155724;pointer-events:none}
+.comp-opt.ko{background:#f8d7da;border-color:#dc3545;color:#721c24;pointer-events:none}
+.comp-fb{margin-top:6px;font-size:12px;padding:5px 10px;border-radius:6px;display:none}
+.comp-fb.show{display:block}
+.comp-fb.good{background:#d4edda;color:#155724}
+.comp-fb.bad{background:#f8d7da;color:#721c24}
+.comp-score-bar{background:#f0f0f0;border-radius:10px;height:7px;margin:10px 0 4px;overflow:hidden}
+.comp-score-fill{height:100%;background:#1a5fa8;border-radius:10px;transition:width .5s}
+.next-btn{width:100%;padding:12px;background:#1a5fa8;color:white;border:none;border-radius:10px;cursor:pointer;font-size:14px;font-family:inherit;margin-top:1rem}
+.next-btn:hover{background:#0d3d6e}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="header">
+  <div>
+    <h1>🇬🇷 Leçon 1 — Η καθημερινή ρουτίνα</h1>
+    <div class="sub">La routine du matin · Conjugaison présent · ~30 min</div>
+    <div class="prog-bar"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+  </div>
+  <div style="font-size:32px;opacity:.85">🏠</div>
+</div>
+<div class="nav">
+  <button class="tab active" onclick="showTab('vocab',this,20)">📖 Vocab</button>
+  <button class="tab" onclick="showTab('grammar',this,40)">📐 Grammaire</button>
+  <button class="tab" onclick="showTab('dialogue',this,65)">💬 Dialogue</button>
+  <button class="tab" onclick="showTab('quiz',this,85)">🧠 Quiz</button>
+  <button class="tab" onclick="showTab('summary',this,100)">✅ Résumé</button>
+</div>
+
+<!-- VOCAB -->
+<div class="sec active" id="tab-vocab">
+  <p class="section-label">Clique sur 🔊 pour écouter · clique sur la carte pour la retourner</p>
+  <div class="vocab-grid" id="vocabGrid"></div>
+  <button class="next-btn" onclick="showTab('grammar',document.querySelectorAll('.tab')[1],40)">Continuer → Grammaire</button>
+</div>
+
+<!-- GRAMMAIRE -->
+<div class="sec" id="tab-grammar">
+  <div class="gcard">
+    <div class="gtitle">Conjugaison présent — ξυπνάω (se réveiller) · Groupe 1 (-άω)</div>
+    <table class="ctable">
+      <thead><tr><th>Pronom</th><th>Forme</th><th>Prononciation</th><th>Français</th></tr></thead>
+      <tbody id="conjTable"></tbody>
+    </table>
+    <div class="tipbox">💡 La terminaison <strong>-άω / -άς / -ά</strong> est très régulière. Ce patron s'applique à des dizaines de verbes : μιλάω (parler), περνάω (passer), αγαπάω (aimer)…</div>
+  </div>
+  <div class="gcard">
+    <div class="gtitle">Autres verbes courants de la routine</div>
+    <table class="ctable">
+      <thead><tr><th>Infinitif</th><th>Je…</th><th>Prononciation</th><th>Français</th></tr></thead>
+      <tbody id="verbsTable"></tbody>
+    </table>
+  </div>
+  <button class="next-btn" onclick="showTab('dialogue',document.querySelectorAll('.tab')[2],65)">Continuer → Dialogue</button>
+</div>
+
+<!-- DIALOGUE -->
+<div class="sec" id="tab-dialogue">
+  <p class="section-label">Écoute le dialogue · clique sur 🔊 pour chaque réplique · puis réponds au jeu de rôle</p>
+  <div class="dbox" id="dialogueBox"></div>
+  <div class="gcard" style="margin-top:0">
+    <div class="gtitle">🎭 Jeu de rôle — Ton matin</div>
+    <div class="rp-area">
+      <div style="font-size:14px;color:#333;margin-bottom:10px">Maria te demande : <strong>« Τι κάνεις το πρωί ; »</strong><br><span style="font-size:12px;color:#888">Réponds avec 2-3 phrases en grec (phonétique acceptée)</span></div>
+      <textarea class="rp-input" id="rpInput" placeholder="Ex : Xypnáo stis eptá, píno kafé ke févgo ya ti douliá…"></textarea>
+      <div class="rp-hints" id="rpHints"></div>
+      <button class="next-btn" style="margin-top:10px" onclick="sendRoleplay()">Envoyer dans le chat pour correction ↗</button>
+    </div>
+  </div>
+  <button class="next-btn" onclick="showTab('quiz',document.querySelectorAll('.tab')[3],85)">Continuer → Quiz</button>
+</div>
+
+<!-- QUIZ -->
+<div class="sec" id="tab-quiz">
+  <div id="quizContainer"></div>
+  <div style="text-align:center;font-size:14px;color:#888;margin-top:8px" id="quizScore"></div>
+  <button class="next-btn" onclick="showTab('summary',document.querySelectorAll('.tab')[4],100)">Voir le résumé →</button>
+</div>
+
+<!-- RÉSUMÉ -->
+<div class="sec" id="tab-summary">
+  <div class="scard">
+    <div style="font-size:14px;font-weight:600;color:#111;margin-bottom:10px">6 expressions clés</div>
+    <div id="summaryExprs"></div>
+  </div>
+  <div class="gcard">
+    <div class="gtitle">📖 Texte à écouter — Το πρωί του Γιώργη</div>
+    <div class="text-controls">
+      <button class="play-btn" id="playAllBtn" onclick="playAll()">▶ Écouter</button>
+      <button class="speed-btn active" id="speed1" onclick="setSpeed(0.75,'speed1')">🐢 Lent</button>
+      <button class="speed-btn" id="speed2" onclick="setSpeed(1.0,'speed2')">▶ Normal</button>
+      <button class="hide-btn" id="hideTransBtn" onclick="toggleHideTrans()">👁 Masquer traductions</button>
+    </div>
+    <div class="text-block" id="textBlock"></div>
+    <div style="font-size:12px;color:#888;margin-top:6px">💡 Clique sur une ligne pour l'écouter seule</div>
+  </div>
+  <div class="gcard">
+    <div class="gtitle">🧠 Compréhension</div>
+    <div id="compQuestions"></div>
+    <div class="comp-score-bar"><div class="comp-score-fill" id="compFill" style="width:0%"></div></div>
+    <div style="font-size:13px;color:#555;text-align:center;margin-top:4px" id="compScoreLabel"></div>
+  </div>
+  <div class="scard">
+    <div style="font-size:14px;font-weight:600;color:#111;margin-bottom:8px">Bilan</div>
+    <div id="summaryScore" style="font-size:13px;color:#555;line-height:1.8"></div>
+  </div>
+  <button class="next-btn" onclick="alert('Bravo ! Passe à la leçon 2 — η οικογένεια !')">Leçon 2 → La famille ↗</button>
+</div>
+</div>
+
+<script>
+const vocab=[
+  {greek:'το πρωί',ph:'to proí',fr:'le matin'},
+  {greek:'ξυπνάω',ph:'xypnáo',fr:'je me réveille'},
+  {greek:'σηκώνομαι',ph:'sikónome',fr:'je me lève'},
+  {greek:'πίνω καφέ',ph:'píno kafé',fr:'je bois un café'},
+  {greek:'τρώω',ph:'tróo',fr:'je mange'},
+  {greek:'φεύγω',ph:'févgo',fr:'je pars'},
+  {greek:'το σπίτι',ph:'to spíti',fr:'la maison'},
+  {greek:'η κουζίνα',ph:'i kouzína',fr:'la cuisine'},
+  {greek:'το μπάνιο',ph:'to bánio',fr:'la salle de bain'},
+  {greek:'συνήθως',ph:'siníthos',fr:'habituellement'},
+  {greek:'κάθε μέρα',ph:'káthe méra',fr:'chaque jour'},
+  {greek:'πριν φύγω',ph:'prin fýgo',fr:'avant de partir'},
+];
+const conjData=[
+  {pr:'εγώ',form:'ξυπν',end:'άω',ph:'xypnáo',fr:'je me réveille'},
+  {pr:'εσύ',form:'ξυπν',end:'άς',ph:'xypnás',fr:'tu te réveilles'},
+  {pr:'αυτός/ή',form:'ξυπν',end:'ά',ph:'xypná',fr:'il/elle se réveille'},
+  {pr:'εμείς',form:'ξυπν',end:'άμε',ph:'xypnáme',fr:'nous nous réveillons'},
+  {pr:'εσείς',form:'ξυπν',end:'άτε',ph:'xypnáte',fr:'vous vous réveillez'},
+  {pr:'αυτοί',form:'ξυπν',end:'άνε',ph:'xypnáne',fr:'ils/elles se réveillent'},
+];
+const otherVerbs=[
+  {inf:'πίνω',je:'πίνω',ph:'píno',fr:'je bois'},
+  {inf:'τρώω',je:'τρώω',ph:'tróo',fr:'je mange'},
+  {inf:'φεύγω',je:'φεύγω',ph:'févgo',fr:'je pars'},
+  {inf:'περνάω',je:'περνάω',ph:'pernáo',fr:'je passe'},
+  {inf:'μιλάω',je:'μιλάω',ph:'miláo',fr:'je parle'},
+  {inf:'πηγαίνω',je:'πηγαίνω',ph:'piyéno',fr:'je vais'},
+];
+const dialogue=[
+  {sp:'A',gk:'Τι κάνεις το πρωί;',ph:'Ti kánis to proí?',fr:"Qu'est-ce que tu fais le matin ?"},
+  {sp:'B',gk:'Ξυπνάω στις επτά, πίνω καφέ και φεύγω για τη δουλειά.',ph:'Xypnáo stis eptá, píno kafé ke févgo ya ti douliá.',fr:'Je me réveille à 7h, je bois un café et je pars au travail.'},
+  {sp:'A',gk:'Τρως πρωινό;',ph:'Tros proinó?',fr:'Tu prends le petit-déjeuner ?'},
+  {sp:'B',gk:'Ναι, συνήθως τρώω ψωμί με μέλι πριν φύγω.',ph:'Ne, siníthos tróo psomí me méli prin fýgo.',fr:'Oui, je mange habituellement du pain avec du miel avant de partir.'},
+  {sp:'A',gk:'Και τι ώρα φεύγεις;',ph:'Ke ti óra févyis?',fr:'Et à quelle heure tu pars ?'},
+  {sp:'B',gk:'Φεύγω στις οκτώ και μισή. Κάθε μέρα το ίδιο!',ph:'Févgo stis októ ke misí. Káthe méra to ídio!',fr:"Je pars à 8h30. Chaque jour pareil !"},
+];
+const rpHints=['Ξυπνάω στις…','Πίνω καφέ','Τρώω…','Φεύγω στις…','Συνήθως…'];
+const summaryExprs=[
+  {greek:'Τι κάνεις το πρωί ;',fr:"Qu'est-ce que tu fais le matin ?"},
+  {greek:'Ξυπνάω στις…',fr:'Je me réveille à…'},
+  {greek:'Πίνω καφέ',fr:'Je bois un café'},
+  {greek:'Φεύγω για τη δουλειά',fr:'Je pars au travail'},
+  {greek:'Συνήθως…',fr:'Habituellement…'},
+  {greek:'Κάθε μέρα το ίδιο !',fr:'Chaque jour pareil !'},
+];
+const textLines=[
+  {gk:'Ο Γιώργης ξυπνάει κάθε μέρα στις επτά το πρωί.',ph:'O Yóryis xypnáei káthe méra stis eptá to proí.',fr:'Giorgis se réveille chaque jour à 7h du matin.'},
+  {gk:'Πίνει τον καφέ του στην κουζίνα και τρώει ψωμί με βούτυρο.',ph:'Pínei ton kafé tou stin kouzína ke tróei psomí me voútiro.',fr:'Il boit son café dans la cuisine et mange du pain avec du beurre.'},
+  {gk:'Μετά πηγαίνει στο μπάνιο, ντύνεται και είναι έτοιμος.',ph:'Metá piyéni sto bánio, ndínetai ke íne étimos.',fr:'Ensuite il va dans la salle de bain, s\'habille et il est prêt.'},
+  {gk:'Φεύγει για τη δουλειά στις οκτώ — κάθε μέρα το ίδιο!',ph:'Févyi ya ti douliá stis októ — káthe méra to ídio!',fr:'Il part au travail à 8h — chaque jour pareil !'},
+];
+const compData=[
+  {fr:'À quelle heure Giorgis se réveille-t-il ?',gk:'Τι ώρα ξυπνάει ο Γιώργης;',opts:['À 6h','À 7h','À 8h','À 9h'],correct:1,fb:'Ligne 1 : ξυπνάει στις επτά = se réveille à 7h.'},
+  {fr:'Que mange-t-il le matin ?',gk:'Τι τρώει το πρωί;',opts:['Des céréales','Des œufs','Du pain avec du beurre','Du pain avec du miel'],correct:2,fb:'Ligne 2 : ψωμί με βούτυρο = pain avec du beurre.'},
+  {fr:'Où boit-il son café ?',gk:'Πού πίνει τον καφέ του;',opts:['Au bureau','Dans le salon','Dans la cuisine','Dans la salle de bain'],correct:2,fb:'Ligne 2 : Πίνει τον καφέ του στην κουζίνα.'},
+  {fr:'À quelle heure part-il au travail ?',gk:'Τι ώρα φεύγει για τη δουλειά;',opts:['À 7h30','À 8h','À 8h30','À 9h'],correct:1,fb:'Ligne 4 : Φεύγει στις οκτώ = Il part à 8h.'},
+];
+const quizData=[
+  {q:"Comment dit-on 'je me réveille' ?",ctx:'',opts:['σηκώνομαι','ξυπνάω','φεύγω','πίνω'],correct:1,fb:'ξυπνάω (xypnáo) = je me réveille. σηκώνομαι = je me lève (debout).'},
+  {q:"Conjugue ξυπνάω à la 2e personne du singulier",ctx:'Εσύ _______',opts:['ξυπνάω','ξυπνάς','ξυπνά','ξυπνάμε'],correct:1,fb:'Εσύ ξυπνάς. Terminaison -άς pour la 2e personne du singulier.'},
+  {q:"Que signifie 'συνήθως' ?",ctx:'',opts:['toujours','jamais','habituellement','parfois'],correct:2,fb:"συνήθως (siníthos) = habituellement. Très utile pour décrire une routine !"},
+  {q:"Comment dire 'je bois un café' ?",ctx:'',opts:['Τρώω καφέ','Πίνω καφέ','Φεύγω καφέ','Έχω καφέ'],correct:1,fb:'Πίνω καφέ (píno kafé) = je bois un café. πίνω = je bois.'},
+  {q:"Conjugue ξυπνάω : 'nous nous réveillons'",ctx:'',opts:['ξυπνάω','ξυπνάς','ξυπνάμε','ξυπνάτε'],correct:2,fb:'Εμείς ξυπνάμε. Terminaison -άμε pour la 1re personne du pluriel.'},
+  {q:"Comment dire 'chaque jour' ?",ctx:'',opts:['κάθε πρωί','κάθε μέρα','κάθε βράδυ','κάθε εβδομάδα'],correct:1,fb:'κάθε μέρα = chaque jour. κάθε + moment = chaque…'},
+  {q:"Que signifie 'φεύγω' ?",ctx:'',opts:['je reste','j\'arrive','je pars','je travaille'],correct:2,fb:'φεύγω (févgo) = je pars. Φεύγω για τη δουλειά = je pars au travail.'},
+  {q:"Quel article s'utilise avec 'σπίτι' ?",ctx:'',opts:['ο','η','το','οι'],correct:2,fb:'το σπίτι = la maison. σπίτι est un nom neutre → article το.'},
+  {q:"Comment dire 'avant de partir' ?",ctx:'',opts:['μετά φύγω','πριν φύγω','όταν φύγω','γιατί φύγω'],correct:1,fb:'πριν φύγω (prin fýgo) = avant de partir. πριν = avant.'},
+  {q:"Conjugue ξυπνάω : 'ils se réveillent'",ctx:'',opts:['ξυπνάει','ξυπνάμε','ξυπνάτε','ξυπνάνε'],correct:3,fb:'Αυτοί ξυπνάνε. Terminaison -άνε pour la 3e personne du pluriel.'},
+  {q:"Comment dit-on 'la salle de bain' ?",ctx:'',opts:['η κουζίνα','το σπίτι','το μπάνιο','το γραφείο'],correct:2,fb:'το μπάνιο (to bánio) = la salle de bain. η κουζίνα = la cuisine.'},
+  {q:"Que signifie 'Τι κάνεις;' ?",ctx:'',opts:['Où vas-tu ?','Qu\'est-ce que tu fais ?','Comment tu t\'appelles ?','Qu\'est-ce que tu veux ?'],correct:1,fb:"Τι κάνεις; = Qu'est-ce que tu fais ? / Comment vas-tu ? Très polyvalent !"},
+  {q:"Comment dire 'je mange' en grec ?",ctx:'',opts:['πίνω','φεύγω','τρώω','μιλάω'],correct:2,fb:'τρώω (tróo) = je mange. Verbe irrégulier à retenir absolument !'},
+  {q:"Quelle est la terminaison de ξυπνάω à la 3e personne du singulier ?",ctx:'Αυτός ξυπν_____',opts:['-άω','-άς','-ά','-άμε'],correct:2,fb:'Αυτός ξυπνά. Terminaison courte -ά pour la 3e personne du singulier.'},
+  {q:"Comment dit-on 'à 7h' en grec ?",ctx:'',opts:['στις επτά','στις οκτώ','στις εννιά','στις δέκα'],correct:0,fb:'στις επτά = à 7h. στις + chiffre = à telle heure (pour les heures féminines).'},
+];
+
+let quizAnswers={}, compAnswers={}, speechRate=0.75, isPlayingAll=false, playIndex=-1, transHidden=false;
+
+function speak(text){
+  if(!window.speechSynthesis)return;
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='el-GR';u.rate=0.85;window.speechSynthesis.speak(u);
+}
+
+function buildVocab(){
+  const g=document.getElementById('vocabGrid');
+  vocab.forEach(v=>{
+    const c=document.createElement('div');c.className='vc';
+    const ge=v.greek.replace(/'/g,"\\'");
+    c.innerHTML='<button class="spk" onclick="event.stopPropagation();speak(\''+ge+'\')">🔊</button><div class="gk">'+v.greek+'</div><div class="ph">'+v.ph+'</div><div class="fr">'+v.fr+'</div>';
+    c.onclick=()=>c.classList.toggle('flip');g.appendChild(c);
+  });
+}
+
+function buildGrammar(){
+  const tb=document.getElementById('conjTable');
+  conjData.forEach(r=>{
+    const f=r.form+r.end;
+    const tr=document.createElement('tr');
+    tr.innerHTML='<td style="color:#888;font-size:13px">'+r.pr+'</td><td class="gk-col">'+r.form+'<span class="end">'+r.end+'</span> <button class="aud" onclick="speak(\''+f+'\')">🔊</button></td><td style="font-style:italic;font-size:12px;color:#888">'+r.ph+'</td><td style="font-size:12px;color:#555">'+r.fr+'</td>';
+    tb.appendChild(tr);
+  });
+  const vt=document.getElementById('verbsTable');
+  otherVerbs.forEach(v=>{
+    const tr=document.createElement('tr');
+    tr.innerHTML='<td style="color:#888;font-size:13px">'+v.inf+'</td><td class="gk-col">'+v.je+' <button class="aud" onclick="speak(\''+v.je+'\')">🔊</button></td><td style="font-style:italic;font-size:12px;color:#888">'+v.ph+'</td><td style="font-size:12px;color:#555">'+v.fr+'</td>';
+    vt.appendChild(tr);
+  });
+}
+
+function buildDialogue(){
+  const box=document.getElementById('dialogueBox');
+  dialogue.forEach(d=>{
+    const div=document.createElement('div');div.className='dline';
+    const init=d.sp==='A'?'KL':'MA';
+    const ge=d.gk.replace(/'/g,"\\'");
+    div.innerHTML='<div class="dbubble '+(d.sp==='A'?'sp-a':'sp-b')+'">'+init+'</div><div><div class="d-gk">'+d.gk+' <button class="d-aud" onclick="speak(\''+ge+'\')">🔊</button></div><div class="d-ph">'+d.ph+'</div><div class="d-fr">'+d.fr+'</div></div>';
+    box.appendChild(div);
+  });
+  const ha=document.getElementById('rpHints');
+  rpHints.forEach(h=>{
+    const s=document.createElement('span');s.className='hint';s.textContent=h;
+    s.onclick=()=>{const t=document.getElementById('rpInput');t.value+=h;t.focus();};
+    ha.appendChild(s);
+  });
+}
+
+function sendRoleplay(){
+  const val=document.getElementById('rpInput').value.trim();
+  if(!val){alert('Écris quelques phrases avant d\'envoyer !');return;}
+  const msg='Corrige ma réponse en grec (jeu de rôle leçon 1 — routine du matin) : '+val;
+  navigator.clipboard.writeText(msg).then(()=>alert('✓ Copié ! Colle ce message dans le chat Claude pour la correction.')).catch(()=>alert('Ta réponse :\n'+val+'\n\nCopie-la dans le chat Claude pour la correction.'));
+}
+
+function buildQuiz(){
+  const cont=document.getElementById('quizContainer');
+  quizData.forEach((q,qi)=>{
+    const card=document.createElement('div');card.className='qcard';
+    const opts=q.opts.map((o,oi)=>'<button class="qopt" id="qo-'+qi+'-'+oi+'" onclick="answerQuiz('+qi+','+oi+')">'+o+'</button>').join('');
+    card.innerHTML='<div class="qq">Q'+(qi+1)+'. '+q.q+'</div>'+(q.ctx?'<div class="qctx">'+q.ctx+'</div>':'')+'<div class="qopts">'+opts+'</div><div class="qfb" id="qf-'+qi+'"></div>';
+    cont.appendChild(card);
+  });
+}
+function answerQuiz(qi,oi){
+  if(quizAnswers[qi]!==undefined)return;quizAnswers[qi]=oi;
+  const c=quizData[qi].correct;
+  document.getElementById('qo-'+qi+'-'+c).classList.add('ok');
+  const fb=document.getElementById('qf-'+qi);
+  if(oi===c){fb.textContent='✓ '+quizData[qi].fb;fb.className='qfb show good';}
+  else{document.getElementById('qo-'+qi+'-'+oi).classList.add('ko');fb.textContent='✗ '+quizData[qi].fb;fb.className='qfb show bad';}
+  const ok=Object.entries(quizAnswers).filter(([k,v])=>quizData[k].correct===v).length;
+  document.getElementById('quizScore').textContent='Score : '+ok+' / '+Object.keys(quizAnswers).length;
+}
+
+function buildSummary(){
+  const cont=document.getElementById('summaryExprs');
+  if(cont.children.length)return;
+  summaryExprs.forEach(e=>{
+    const row=document.createElement('div');row.className='erow';
+    const ge=e.greek.replace(/'/g,"\\'");
+    row.innerHTML='<span class="e-gk">'+e.greek+' <button class="aud" onclick="speak(\''+ge+'\')">🔊</button></span><span class="e-fr">'+e.fr+'</span>';
+    cont.appendChild(row);
+  });
+  buildTextBlock();buildCompQ();
+  const ok=Object.entries(quizAnswers).filter(([k,v])=>quizData[k].correct===v).length;
+  document.getElementById('summaryScore').innerHTML='Quiz : <strong>'+ok+' / '+quizData.length+'</strong> bonnes réponses<br>Vocabulaire : '+vocab.length+' mots<br>Grammaire : conjugaison ξυπνάω groupe 1 (-άω)<br><br>'+(ok>=13?'🌟 Excellent ! Tu maîtrises la leçon 1.':ok>=10?'👍 Très bien ! Encore un peu de pratique.':'💪 Réécoute le dialogue et recommence le quiz.');
+}
+
+function buildTextBlock(){
+  const b=document.getElementById('textBlock');if(b.children.length)return;
+  textLines.forEach((l,i)=>{
+    const d=document.createElement('div');d.className='text-line';d.id='tline-'+i;
+    d.onclick=()=>speakLine(i);
+    d.innerHTML='<div class="line-num">'+(i+1)+'</div><div><div style="font-size:14px;font-weight:500;color:#111;line-height:1.5">'+l.gk+'</div><div id="ph-'+i+'" style="font-size:11px;color:#888;font-style:italic">'+l.ph+'</div><div id="fr-'+i+'" style="font-size:12px;color:#555">'+l.fr+'</div></div>';
+    b.appendChild(d);
+  });
+}
+function speakLine(i){
+  window.speechSynthesis.cancel();
+  document.querySelectorAll('.text-line').forEach(l=>l.classList.remove('highlight'));
+  document.getElementById('tline-'+i).classList.add('highlight');
+  const u=new SpeechSynthesisUtterance(textLines[i].gk);u.lang='el-GR';u.rate=speechRate;
+  u.onend=()=>document.getElementById('tline-'+i).classList.remove('highlight');
+  window.speechSynthesis.speak(u);
+}
+function setSpeed(r,id){speechRate=r;document.querySelectorAll('.speed-btn').forEach(b=>b.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function playAll(){
+  if(isPlayingAll){window.speechSynthesis.cancel();isPlayingAll=false;playIndex=-1;document.getElementById('playAllBtn').textContent='▶ Écouter';document.getElementById('playAllBtn').className='play-btn';document.querySelectorAll('.text-line').forEach(l=>l.classList.remove('highlight'));return;}
+  isPlayingAll=true;playIndex=0;document.getElementById('playAllBtn').textContent='⏹ Arrêter';document.getElementById('playAllBtn').className='play-btn playing';playNext();
+}
+function playNext(){
+  if(!isPlayingAll||playIndex>=textLines.length){isPlayingAll=false;playIndex=-1;document.getElementById('playAllBtn').textContent='▶ Réécouter';document.getElementById('playAllBtn').className='play-btn';document.querySelectorAll('.text-line').forEach(l=>l.classList.remove('highlight'));return;}
+  document.querySelectorAll('.text-line').forEach(l=>l.classList.remove('highlight'));
+  const el=document.getElementById('tline-'+playIndex);if(el){el.classList.add('highlight');el.scrollIntoView({behavior:'smooth',block:'nearest'});}
+  const u=new SpeechSynthesisUtterance(textLines[playIndex].gk);u.lang='el-GR';u.rate=speechRate;
+  u.onend=()=>{if(el)el.classList.remove('highlight');playIndex++;setTimeout(playNext,400);};
+  window.speechSynthesis.speak(u);
+}
+function toggleHideTrans(){
+  transHidden=!transHidden;
+  const btn=document.getElementById('hideTransBtn');
+  textLines.forEach((_,i)=>{['fr-','ph-'].forEach(p=>{const el=document.getElementById(p+i);if(el)el.style.display=transHidden?'none':'';});});
+  btn.textContent=transHidden?'👁 Afficher traductions':'👁 Masquer traductions';
+  btn.className=transHidden?'hide-btn hidden-mode':'hide-btn';
+}
+function buildCompQ(){
+  const cont=document.getElementById('compQuestions');if(cont.children.length)return;
+  compData.forEach((q,qi)=>{
+    const d=document.createElement('div');d.className='comp-q';
+    const opts=q.opts.map((o,oi)=>'<button class="comp-opt" id="co-'+qi+'-'+oi+'" onclick="answerComp('+qi+','+oi+')">'+o+'</button>').join('');
+    d.innerHTML='<div class="comp-question">Q'+(qi+1)+'. '+q.fr+'</div><div class="comp-greek">'+q.gk+'</div><div class="comp-opts">'+opts+'</div><div class="comp-fb" id="cf-'+qi+'"></div>';
+    cont.appendChild(d);
+  });
+}
+function answerComp(qi,oi){
+  if(compAnswers[qi]!==undefined)return;compAnswers[qi]=oi;
+  const c=compData[qi].correct;
+  document.getElementById('co-'+qi+'-'+c).classList.add('ok');
+  const fb=document.getElementById('cf-'+qi);
+  if(oi===c){fb.textContent='✓ '+compData[qi].fb;fb.className='comp-fb show good';}
+  else{document.getElementById('co-'+qi+'-'+oi).classList.add('ko');fb.textContent='✗ '+compData[qi].fb;fb.className='comp-fb show bad';}
+  const ok=Object.entries(compAnswers).filter(([k,v])=>compData[k].correct==v).length;
+  const pct=Math.round(ok/compData.length*100);
+  document.getElementById('compFill').style.width=pct+'%';
+  document.getElementById('compScoreLabel').textContent=ok+' / '+Object.keys(compAnswers).length+' — '+pct+'%';
+}
+
+function showTab(id,btn,prog){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');btn.classList.add('active');
+  document.getElementById('prog').style.width=prog+'%';
+  if(id==='summary')buildSummary();
+}
+buildVocab();buildGrammar();buildDialogue();buildQuiz();
+</script>
+</body>
+</html>

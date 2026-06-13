@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grec Lecon 5 - Η δουλειά</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#f5f7fa;padding:1rem}
+.app{max-width:720px;margin:0 auto}
+.header{background:linear-gradient(135deg,#4a1a6e 0%,#2d0d47 100%);border-radius:14px;padding:1.25rem 1.5rem;margin-bottom:1.5rem;color:white;display:flex;align-items:center;justify-content:space-between}
+.header h1{font-size:20px;font-weight:500;color:white;margin-bottom:4px}
+.sub{font-size:13px;opacity:.75}
+.prog-bar{height:5px;background:rgba(255,255,255,.2);border-radius:3px;margin-top:10px}
+.prog-fill{height:100%;background:#c9a7f5;border-radius:3px;transition:width .5s}
+.nav{display:flex;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap}
+.tab{flex:1;min-width:70px;padding:8px 4px;font-size:12px;border:1px solid #ddd;border-radius:8px;cursor:pointer;background:white;color:#666;transition:all .2s;font-family:inherit;text-align:center}
+.tab.active{background:#4a1a6e;color:white;border-color:#4a1a6e}
+.sec{display:none}.sec.active{display:block}
+.section-label{font-size:13px;color:#888;margin-bottom:12px}
+.vocab-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:1rem}
+.vc{background:white;border:1px solid #ddd;border-radius:10px;padding:10px 14px;cursor:pointer;transition:all .18s;position:relative}
+.vc:hover{border-color:#4a1a6e}
+.vc .gk{font-size:15px;font-weight:600;color:#4a1a6e}
+.vc .ph{font-size:11px;color:#888;font-style:italic;margin:2px 0}
+.vc .fr{font-size:13px;color:#333}
+.vc .spk{position:absolute;top:8px;right:10px;background:none;border:none;cursor:pointer;color:#4a1a6e;font-size:15px;padding:0}
+.vc.flip{background:#f3eefe}
+.gcard{background:white;border:1px solid #ddd;border-radius:12px;padding:1rem 1.25rem;margin-bottom:1rem}
+.gtitle{font-size:12px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px}
+.ctable{width:100%;border-collapse:collapse;font-size:13px}
+.ctable td,.ctable th{padding:7px 10px;text-align:left;border-bottom:1px solid #f0f0f0}
+.ctable th{font-weight:600;color:#888;font-size:12px}
+.gk-col{color:#4a1a6e;font-weight:600;font-size:14px}
+.end{color:#c0392b}
+.tipbox{background:#f3eefe;border-left:3px solid #4a1a6e;border-radius:0 8px 8px 0;padding:10px 14px;font-size:13px;color:#2d0d47;margin-top:10px}
+.aud{color:#4a1a6e;cursor:pointer;font-size:14px;background:none;border:none;padding:0 3px}
+.jobs-wrap{background:#f3eefe;border-radius:14px;padding:1.25rem;margin-bottom:1rem}
+.jobs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.job-card{background:white;border:1px solid #ddd;border-radius:10px;padding:12px 8px;text-align:center;cursor:pointer;transition:all .18s;position:relative}
+.job-card:hover,.job-card.selected{border-color:#4a1a6e;background:#f3eefe}
+.job-emoji{font-size:24px}
+.job-gk{font-size:12px;font-weight:600;color:#4a1a6e;margin-top:4px;line-height:1.3}
+.job-ph{font-size:10px;color:#888;font-style:italic}
+.job-fr{font-size:11px;color:#555}
+.job-spk{position:absolute;top:4px;right:6px;background:none;border:none;cursor:pointer;color:#4a1a6e;font-size:12px;padding:0}
+.job-info{background:white;border:1px solid #ddd;border-radius:10px;padding:12px 14px;min-height:52px}
+.chat-container{background:white;border:1px solid #ddd;border-radius:14px;overflow:hidden;margin-bottom:1rem}
+.chat-header{background:#f3eefe;padding:12px 16px;border-bottom:1px solid #ddd;display:flex;align-items:center;justify-content:space-between}
+.chat-header-left{display:flex;align-items:center;gap:10px}
+.avatar{width:40px;height:40px;border-radius:50%;background:#4a1a6e;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.av-name{font-size:14px;font-weight:600;color:#111}
+.av-role{font-size:12px;color:#888}
+.reset-btn{padding:6px 12px;background:none;border:1px solid #c9a7f5;border-radius:8px;color:#4a1a6e;font-size:12px;cursor:pointer;font-family:inherit}
+.reset-btn:hover{background:#f3eefe}
+.chat-messages{padding:16px;min-height:320px;max-height:520px;overflow-y:auto;display:flex;flex-direction:column;gap:10px}
+.msg{display:flex;gap:10px;align-items:flex-start;animation:fadeIn .25s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{flex-direction:row-reverse}
+.msg-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:white;flex-shrink:0;margin-top:2px}
+.av-k{background:#4a1a6e}
+.av-u{background:#0d6e56}
+.bubble{max-width:80%;padding:10px 14px;border-radius:12px;font-size:14px;line-height:1.6}
+.b-k{background:#f3eefe;border:1px solid #c9a7f5;border-radius:4px 12px 12px 12px;color:#111}
+.b-u{background:#0d6e56;color:white;border-radius:12px 4px 12px 12px}
+.bph{font-size:11px;color:#888;font-style:italic;margin-top:3px}
+.bfr{font-size:12px;color:#888;margin-top:2px}
+.spk-line{background:none;border:none;cursor:pointer;font-size:12px;color:#4a1a6e;padding:0;margin-top:4px;display:block}
+.corr-card{background:white;border:1.5px solid #e0d0f7;border-radius:12px;padding:1rem 1.25rem;margin:0 0 8px 42px;animation:fadeIn .3s ease}
+.corr-title{font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px}
+.corr-row{display:flex;gap:10px;padding:6px 0;border-bottom:1px solid #f5f0fe;font-size:13px;align-items:flex-start}
+.corr-row:last-of-type{border-bottom:none}
+.corr-label{color:#aaa;min-width:85px;flex-shrink:0;font-size:12px;padding-top:1px}
+.corr-gk{color:#4a1a6e;font-weight:600;font-size:15px}
+.corr-ok{color:#0d6e56;font-weight:600;font-size:15px}
+.badge-ok{display:inline-block;background:#d4edda;color:#155724;border-radius:6px;padding:3px 10px;font-size:12px;font-weight:600;margin-top:6px}
+.badge-err{display:inline-block;background:#fff3cd;color:#856404;border-radius:6px;padding:3px 10px;font-size:12px;font-weight:600;margin-top:6px}
+.corr-tip{background:#f3eefe;border-left:3px solid #4a1a6e;border-radius:0 6px 6px 0;padding:7px 12px;font-size:12px;color:#2d0d47;margin-top:8px}
+.typing{display:flex;gap:4px;align-items:center;padding:10px 14px;background:#f3eefe;border:1px solid #c9a7f5;border-radius:4px 12px 12px 12px;width:fit-content}
+.dot{width:7px;height:7px;border-radius:50%;background:#9966cc;animation:bounce .9s infinite}
+.dot:nth-child(2){animation-delay:.2s}
+.dot:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+.hint-chips{display:flex;flex-wrap:wrap;gap:6px;padding:8px 16px}
+.chip{padding:5px 12px;background:#f3eefe;color:#4a1a6e;border-radius:20px;font-size:12px;cursor:pointer;border:1px solid #c9a7f5;transition:all .15s}
+.chip:hover{background:#4a1a6e;color:white}
+.input-panel{border-top:1px solid #f0f0f0;padding:12px 16px;background:#fafafa}
+.input-row{display:flex;gap:8px}
+.msg-input{flex:1;border:1px solid #ddd;border-radius:10px;padding:10px 14px;font-size:14px;font-family:inherit;color:#333;background:white;resize:none;min-height:44px;max-height:120px;outline:none;transition:border .2s;line-height:1.5}
+.msg-input:focus{border-color:#4a1a6e}
+.send-btn{padding:10px 18px;background:#4a1a6e;color:white;border:none;border-radius:10px;cursor:pointer;font-size:14px;font-family:inherit;font-weight:500;align-self:flex-end}
+.send-btn:disabled{background:#ccc;cursor:not-allowed}
+.send-btn:not(:disabled):hover{background:#2d0d47}
+.input-hint{font-size:11px;color:#aaa;margin-top:4px}
+.qcard{background:white;border:1px solid #ddd;border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+.qq{font-size:15px;font-weight:500;color:#111;margin-bottom:4px}
+.qctx{font-size:13px;color:#888;margin-bottom:10px;font-style:italic}
+.qopts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.qopt{padding:9px 14px;font-size:13px;border:1px solid #ddd;border-radius:8px;cursor:pointer;background:white;color:#333;text-align:left;transition:all .18s;font-family:inherit}
+.qopt:hover{border-color:#4a1a6e;background:#f3eefe}
+.qopt.ok{background:#d4edda;border-color:#28a745;color:#155724}
+.qopt.ko{background:#f8d7da;border-color:#dc3545;color:#721c24}
+.qfb{margin-top:10px;font-size:13px;padding:8px 12px;border-radius:8px;display:none}
+.qfb.show{display:block}
+.qfb.good{background:#d4edda;color:#155724}
+.qfb.bad{background:#f8d7da;color:#721c24}
+.scard{background:white;border:1px solid #ddd;border-radius:12px;padding:1rem 1.25rem;margin-bottom:10px}
+.erow{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:14px}
+.erow:last-child{border-bottom:none}
+.e-gk{color:#4a1a6e;font-weight:600}
+.e-fr{color:#888;font-size:13px}
+.text-card{background:white;border:1px solid #ddd;border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+.text-controls{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap}
+.play-btn{padding:9px 16px;background:#4a1a6e;color:white;border:none;border-radius:8px;cursor:pointer;font-size:14px;font-family:inherit;font-weight:500}
+.play-btn.playing{background:#dc3545}
+.speed-btn{padding:7px 12px;border:1px solid #ddd;border-radius:8px;cursor:pointer;font-size:13px;font-family:inherit;background:white;color:#555}
+.speed-btn.active{background:#f3eefe;border-color:#4a1a6e;color:#4a1a6e;font-weight:600}
+.hide-btn{padding:7px 12px;border:1px solid #ddd;border-radius:8px;cursor:pointer;font-size:12px;font-family:inherit;background:white;color:#555}
+.hide-btn.hidden-mode{background:#fff3cd;border-color:#ffc107;color:#856404}
+.text-block{background:#f3eefe;border-radius:10px;padding:1rem;margin-bottom:8px}
+.text-line{display:flex;gap:10px;padding:6px 8px;border-radius:8px;cursor:pointer;transition:background .15s;margin-bottom:6px}
+.text-line:hover{background:#dcc9f7}
+.text-line.highlight{background:#c9a7f5}
+.text-line:last-child{margin-bottom:0}
+.line-num{min-width:22px;height:22px;border-radius:50%;background:#4a1a6e;color:white;font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.line-gk{font-size:14px;font-weight:500;color:#111;line-height:1.5}
+.line-ph{font-size:11px;color:#888;font-style:italic}
+.line-fr{font-size:12px;color:#555}
+.comp-card{background:white;border:1px solid #ddd;border-radius:12px;padding:1.25rem;margin-bottom:1rem}
+.comp-q{margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid #f0f0f0}
+.comp-q:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.comp-question{font-size:14px;font-weight:500;color:#111;margin-bottom:4px}
+.comp-greek{font-size:12px;color:#4a1a6e;font-style:italic;margin-bottom:8px}
+.comp-opts{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.comp-opt{padding:8px 12px;font-size:13px;border:1px solid #ddd;border-radius:8px;cursor:pointer;background:white;color:#333;text-align:left;font-family:inherit;transition:all .18s}
+.comp-opt:hover{border-color:#4a1a6e;background:#f3eefe}
+.comp-opt.ok{background:#d4edda;border-color:#28a745;color:#155724;pointer-events:none}
+.comp-opt.ko{background:#f8d7da;border-color:#dc3545;color:#721c24;pointer-events:none}
+.comp-fb{margin-top:6px;font-size:12px;padding:5px 10px;border-radius:6px;display:none}
+.comp-fb.show{display:block}
+.comp-fb.good{background:#d4edda;color:#155724}
+.comp-fb.bad{background:#f8d7da;color:#721c24}
+.comp-score-bar{background:#f0f0f0;border-radius:10px;height:7px;margin:10px 0 4px;overflow:hidden}
+.comp-score-fill{height:100%;background:#4a1a6e;border-radius:10px;transition:width .5s}
+.next-btn{width:100%;padding:12px;background:#4a1a6e;color:white;border:none;border-radius:10px;cursor:pointer;font-size:14px;font-family:inherit;margin-top:1rem}
+.next-btn:hover{background:#2d0d47}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="header">
+  <div>
+    <h1>&#127468;&#127479; Lecon 5 &#8212; &#919; &#948;&#959;&#965;&#955;&#949;&#953;&#940;</h1>
+    <div class="sub">Le travail &#38; l'ecole &#183; Conversation libre avec Kostas &#183; ~30 min</div>
+    <div class="prog-bar"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+  </div>
+  <div style="font-size:32px;opacity:.85">&#128188;</div>
+</div>
+<div class="nav">
+  <button class="tab active" onclick="showTab('vocab',this,15)">&#128214; Vocab</button>
+  <button class="tab" onclick="showTab('metiers',this,30)">&#128188; Metiers</button>
+  <button class="tab" onclick="showTab('grammar',this,50)">&#128208; Grammaire</button>
+  <button class="tab" onclick="showTab('conv',this,75)">&#128172; Conversation</button>
+  <button class="tab" onclick="showTab('quiz',this,90)">&#129504; Quiz</button>
+  <button class="tab" onclick="showTab('summary',this,100)">&#9989; Resume</button>
+</div>
+<div class="sec active" id="tab-vocab">
+  <p class="section-label">Clique sur &#128266; pour ecouter &#183; clique sur la carte pour la retourner</p>
+  <div class="vocab-grid" id="vocabGrid"></div>
+  <button class="next-btn" onclick="showTab('metiers',document.querySelectorAll('.tab')[1],30)">Continuer &#8594; Metiers</button>
+</div>
+<div class="sec" id="tab-metiers">
+  <p class="section-label">Clique sur un metier pour apprendre a en parler &#128266;</p>
+  <div class="jobs-wrap">
+    <div style="font-size:13px;font-weight:600;color:#4a1a6e;margin-bottom:12px">&#128188; &#932;&#945; &#949;&#960;&#945;&#947;&#947;&#941;&#955;&#956;&#945;&#964;&#945;</div>
+    <div class="jobs-grid" id="jobsGrid"></div>
+    <div class="job-info" id="jobInfo"><div style="color:#888;font-size:13px">&#128070; Selectionne un metier</div></div>
+  </div>
+  <button class="next-btn" onclick="showTab('grammar',document.querySelectorAll('.tab')[2],50)">Continuer &#8594; Grammaire</button>
+</div>
+<div class="sec" id="tab-grammar">
+  <div class="gcard">
+    <div class="gtitle">Parler de son metier &#8212; structure cle</div>
+    <table class="ctable">
+      <thead><tr><th>Structure</th><th>Exemple</th><th>Francais</th></tr></thead>
+      <tbody>
+        <tr><td style="font-size:12px;color:#888">&#917;&#943;&#956;&#945;&#953; + metier (sans article !)</td><td class="gk-col" style="font-size:13px">&#917;&#943;&#956;&#945;&#953; &#948;&#940;&#963;&#954;&#945;&#955;&#959;&#962;. <button class="aud" onclick="speak('&#917;&#943;&#956;&#945;&#953; &#948;&#940;&#963;&#954;&#945;&#955;&#959;&#962;')">&#128266;</button></td><td style="font-size:12px;color:#555">Je suis professeur.</td></tr>
+        <tr><td style="font-size:12px;color:#888">&#916;&#959;&#965;&#955;&#949;&#973;&#969; &#969;&#962; + metier</td><td class="gk-col" style="font-size:13px">&#916;&#959;&#965;&#955;&#949;&#973;&#969; &#969;&#962; &#947;&#953;&#945;&#964;&#961;&#972;&#962;. <button class="aud" onclick="speak('&#916;&#959;&#965;&#955;&#949;&#973;&#969; &#969;&#962; &#947;&#953;&#945;&#964;&#961;&#972;&#962;')">&#128266;</button></td><td style="font-size:12px;color:#555">Je travaille en tant que medecin.</td></tr>
+        <tr><td style="font-size:12px;color:#888">&#916;&#959;&#965;&#955;&#949;&#973;&#969; &#963;&#949; + lieu</td><td class="gk-col" style="font-size:13px">&#916;&#959;&#965;&#955;&#949;&#973;&#969; &#963;&#949; &#963;&#967;&#959;&#955;&#949;&#943;&#959;. <button class="aud" onclick="speak('&#916;&#959;&#965;&#955;&#949;&#973;&#969; &#963;&#949; &#963;&#967;&#959;&#955;&#949;&#943;&#959;')">&#128266;</button></td><td style="font-size:12px;color:#555">Je travaille dans une ecole.</td></tr>
+        <tr><td style="font-size:12px;color:#888">&#931;&#960;&#959;&#965;&#948;&#940;&#950;&#969; + domaine</td><td class="gk-col" style="font-size:13px">&#931;&#960;&#959;&#965;&#948;&#940;&#950;&#969; &#956;&#945;&#952;&#951;&#956;&#945;&#964;&#953;&#954;&#940;. <button class="aud" onclick="speak('&#931;&#960;&#959;&#965;&#948;&#940;&#950;&#969; &#956;&#945;&#952;&#951;&#956;&#945;&#964;&#953;&#954;&#940;')">&#128266;</button></td><td style="font-size:12px;color:#555">J'etudie les maths.</td></tr>
+      </tbody>
+    </table>
+    <div class="tipbox">&#128161; <strong>&#917;&#943;&#956;&#945;&#953; + metier = SANS article</strong> : Eimi daskalos (pas Eimi o daskalos). Identique au francais !</div>
+  </div>
+  <div class="gcard">
+    <div class="gtitle">&#948;&#959;&#965;&#955;&#949;&#973;&#969; (travailler) &#8212; present</div>
+    <table class="ctable">
+      <thead><tr><th>Pronom</th><th>Forme</th><th>Prononciation</th><th>Exemple</th></tr></thead>
+      <tbody id="conjTable"></tbody>
+    </table>
+  </div>
+  <button class="next-btn" onclick="showTab('conv',document.querySelectorAll('.tab')[3],75)">Continuer &#8594; Conversation</button>
+</div>
+<div class="sec" id="tab-conv">
+  <p class="section-label">Conversation libre avec Kostas. Il reagit a ce que tu dis, pose des questions de suivi naturelles. Chaque reponse est corrigee juste apres.</p>
+  <div class="chat-container">
+    <div class="chat-header">
+      <div class="chat-header-left">
+        <div class="avatar">&#128104;</div>
+        <div>
+          <div class="av-name">Kostas Dimitriou</div>
+          <div class="av-role">Ingenieur &#183; Thessalonique &#183; conversation libre</div>
+        </div>
+      </div>
+      <button class="reset-btn" onclick="resetConv()">&#8634; Recommencer</button>
+    </div>
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="hint-chips" id="hintChips"></div>
+    <div class="input-panel">
+      <div class="input-row">
+        <textarea class="msg-input" id="msgInput" placeholder="Reponds en phonetique ou en grec..." rows="1" oninput="onType()" onkeydown="onKey(event)"></textarea>
+        <button class="send-btn" id="sendBtn" onclick="sendMsg()" disabled>&#8599;</button>
+      </div>
+      <div class="input-hint">Entree pour envoyer &#183; Shift+Entree pour aller a la ligne</div>
+    </div>
+  </div>
+  <button class="next-btn" onclick="showTab('quiz',document.querySelectorAll('.tab')[4],90)">Continuer &#8594; Quiz</button>
+</div>
+<div class="sec" id="tab-quiz">
+  <div id="quizContainer"></div>
+  <div style="text-align:center;font-size:14px;color:#888;margin-top:8px" id="quizScore"></div>
+  <button class="next-btn" onclick="showTab('summary',document.querySelectorAll('.tab')[5],100)">Voir le resume &#8594;</button>
+</div>
+<div class="sec" id="tab-summary">
+  <div class="scard">
+    <div style="font-size:14px;font-weight:600;color:#111;margin-bottom:10px">6 expressions cles</div>
+    <div id="summaryExprs"></div>
+  </div>
+  <div class="text-card">
+    <div style="font-size:12px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">Texte a ecouter &#8212; &#919; &#931;&#959;&#966;&#943;&#945; &#954;&#945;&#953; &#951; &#948;&#959;&#965;&#955;&#949;&#953;&#940; &#964;&#951;&#962;</div>
+    <div class="text-controls">
+      <button class="play-btn" id="playAllBtn" onclick="playAll()">&#9654; Ecouter</button>
+      <button class="speed-btn active" id="speed1" onclick="setSpeed(0.75,'speed1')">Lent</button>
+      <button class="speed-btn" id="speed2" onclick="setSpeed(1.0,'speed2)">Normal</button>
+      <button class="hide-btn" id="hideTransBtn" onclick="toggleHideTrans()">Masquer traductions</button>
+    </div>
+    <div class="text-block" id="textBlock"></div>
+  </div>
+  <div class="comp-card">
+    <div style="font-size:12px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px">Questions de comprehension</div>
+    <div id="compQuestions"></div>
+    <div class="comp-score-bar"><div class="comp-score-fill" id="compFill" style="width:0%"></div></div>
+    <div style="font-size:13px;color:#555;text-align:center;margin-top:4px" id="compScoreLabel"></div>
+  </div>
+  <div class="scard">
+    <div style="font-size:14px;font-weight:600;color:#111;margin-bottom:8px">Bilan</div>
+    <div id="summaryScore" style="font-size:13px;color:#555;line-height:1.8"></div>
+  </div>
+  <button class="next-btn" onclick="alert('Lecon 6 arrive bientot !')">Lecon 6 &#8594; Les emotions</button>
+</div>
+</div>
+<script>
+const vocab=[
+  {greek:'η δουλειά',ph:'i douliá',fr:'le travail'},
+  {greek:'το επάγγελμα',ph:'to epángelma',fr:'le métier'},
+  {greek:'δουλεύω',ph:'doulévo',fr:'je travaille'},
+  {greek:'σπουδάζω',ph:'spoudázo',fr:"j'étudie"},
+  {greek:'το σχολείο',ph:'to scholío',fr:"l'école"},
+  {greek:'το πανεπιστήμιο',ph:'to panepistímio',fr:"l'université"},
+  {greek:'το γραφείο',ph:'to grafío',fr:'le bureau'},
+  {greek:'ο μισθός',ph:'o misthós',fr:'le salaire'},
+  {greek:'άνεργος/η',ph:'ánergos/i',fr:'au chômage'},
+  {greek:'η εμπειρία',ph:'i embeiría',fr:"l'expérience"},
+  {greek:'μου αρέσει',ph:'mou arési',fr:"j'aime / ça me plaît"},
+  {greek:'ενδιαφέρον',ph:'endiaféron',fr:'intéressant'},
+];
+const jobs=[
+  {emoji:'👨‍🏫',gk:'ο δάσκαλος / η δασκάλα',ph:'dáskalos',fr:'professeur/instituteur',
+   s:{gk:'Είμαι δάσκαλος. Δουλεύω σε σχολείο.',ph:'Íme dáskalos. Doulévo se scholío.',fr:"Je suis professeur. Je travaille dans une école."}},
+  {emoji:'👩‍⚕️',gk:'ο/η γιατρός',ph:'yiatrós',fr:'médecin',
+   s:{gk:'Είμαι γιατρός. Εργάζομαι σε νοσοκομείο.',ph:'Íme yiatrós. Ergázome se nosokomío.',fr:"Je suis médecin. Je travaille dans un hôpital."}},
+  {emoji:'👨‍💻',gk:'ο/η μηχανικός',ph:'michanikós',fr:'ingénieur(e)',
+   s:{gk:'Είμαι μηχανικός. Δουλεύω σε εταιρεία.',ph:'Íme michanikós. Doulévo se etería.',fr:"Je suis ingénieur. Je travaille dans une entreprise."}},
+  {emoji:'⚖️',gk:'ο/η δικηγόρος',ph:'dikigóros',fr:'avocat(e)',
+   s:{gk:'Είμαι δικηγόρος. Δουλεύω σε γραφείο.',ph:'Íme dikigóros. Doulévo se grafío.',fr:"Je suis avocat(e). Je travaille dans un cabinet."}},
+  {emoji:'🍳',gk:'ο μάγειρας',ph:'mágiras',fr:'cuisinier/cuisinière',
+   s:{gk:'Είμαι μάγειρας. Δουλεύω σε εστιατόριο.',ph:'Íme mágiras. Doulévo se estiatório.',fr:"Je suis cuisinier. Je travaille dans un restaurant."}},
+  {emoji:'🎓',gk:'ο φοιτητής / η φοιτήτρια',ph:'fititís',fr:'étudiant(e)',
+   s:{gk:'Είμαι φοιτητής. Σπουδάζω στο πανεπιστήμιο.',ph:'Íme fititís. Spoudázo sto panepistímio.',fr:"Je suis étudiant. J'étudie à l'université."}},
+];
+const conjData=[
+  {pr:'εγώ',form:'δουλεύ',end:'ω',ph:'doulévo',ex:'Δουλεύω σε σχολείο'},
+  {pr:'εσύ',form:'δουλεύ',end:'εις',ph:'douléveis',ex:'Πού δουλεύεις;'},
+  {pr:'αυτός/ή',form:'δουλεύ',end:'ει',ph:'doulévi',ex:'Δουλεύει στο γραφείο'},
+  {pr:'εμείς',form:'δουλεύ',end:'ουμε',ph:'doulévoume',ex:'Δουλεύουμε μαζί'},
+  {pr:'εσείς',form:'δουλεύ',end:'ετε',ph:'douléveté',ex:'Πού δουλεύετε;'},
+  {pr:'αυτοί',form:'δουλεύ',end:'ουν',ph:'doulévoune',ex:'Δουλεύουν εδώ'},
+];
+const summaryExprs=[
+  {greek:'Τι δουλειά κάνεις ;',fr:"Qu'est-ce que tu fais dans la vie ?"},
+  {greek:'Είμαι + métier (sans article)',fr:'Je suis professeur / médecin…'},
+  {greek:'Δουλεύω σε σχολείο / γραφείο',fr:'Je travaille dans une école / un bureau'},
+  {greek:'Σπουδάζω στο πανεπιστήμιο',fr:"J'étudie à l'université"},
+  {greek:'Μου αρέσει η δουλειά μου',fr:"J'aime mon travail"},
+  {greek:'Πόσες ώρες δουλεύεις ;',fr:"Combien d'heures tu travailles ?"},
+];
+const textLines=[
+  {gk:'Η Σοφία είναι δασκάλα σε δημοτικό σχολείο στη Θεσσαλονίκη.',ph:'I Sofía íne daskála se dimotikó scholío sti Thessaloníki.',fr:'Sofia est institutrice dans une école primaire à Thessalonique.'},
+  {gk:'Δουλεύει πέντε μέρες την εβδομάδα και πολύ αγαπάει τη δουλειά της.',ph:'Doulévi pénte méres tin evdomáda ke polí agapái ti douliá tis.',fr:'Elle travaille cinq jours par semaine et aime beaucoup son travail.'},
+  {gk:'Τα μαθήματά της αρχίζουν στις οκτώ και τελειώνουν στις δύο.',ph:'Ta mathímata tis archízoune stis ochtó ke teliónoune stis dío.',fr:'Ses cours commencent à 8h et se terminent à 14h.'},
+  {gk:'Μετά τη δουλειά σπουδάζει αγγλικά για να βελτιώσει το βιογραφικό της.',ph:'Metá ti douliá spoudázi angliká ya na veltiósi to viografikó tis.',fr:"Après le travail, elle étudie l'anglais pour améliorer son CV."},
+];
+const compData=[
+  {fr:'Quelle est la profession de Sofia ?',gk:'Τι δουλειά κάνει η Σοφία;',opts:['Médecin','Avocate','Institutrice','Ingénieure'],correct:2,fb:'Ligne 1 : η Σοφία είναι δασκάλα.'},
+  {fr:'Dans quelle ville travaille-t-elle ?',gk:'Σε ποια πόλη δουλεύει;',opts:['Athènes','Héraklion','Patras','Thessalonique'],correct:3,fb:'Ligne 1 : στη Θεσσαλονίκη.'},
+  {fr:'À quelle heure commencent ses cours ?',gk:'Τι ώρα αρχίζουν τα μαθήματά της;',opts:['À 7h','À 8h','À 9h','À 10h'],correct:1,fb:'Ligne 3 : αρχίζουν στις οκτώ = commencent à 8h.'},
+  {fr:"Pourquoi étudie-t-elle l'anglais ?",gk:'Γιατί σπουδάζει αγγλικά;',opts:['Pour voyager','Pour son plaisir','Pour améliorer son CV','Pour ses élèves'],correct:2,fb:'Ligne 4 : για να βελτιώσει το βιογραφικό της.'},
+];
+const quizData=[
+  {q:"Comment dit-on 'je travaille' (courant) ?",ctx:'',opts:['εργάζομαι','δουλεύω','σπουδάζω','εργάζεσαι'],correct:1,fb:'δουλεύω = je travaille (registre courant). εργάζομαι est plus formel.'},
+  {q:"Quelle phrase est correcte pour dire 'je suis médecin' ?",ctx:'Attention à l\'article !',opts:['Είμαι ο γιατρός','Είμαι γιατρός','Εγώ ο γιατρός','Δουλεύω γιατρός'],correct:1,fb:"Είμαι γιατρός — sans article ! Même règle qu'en français."},
+  {q:"Que signifie 'σπουδάζω' ?",ctx:'',opts:['je travaille','je voyage',"j'étudie","j'enseigne"],correct:2,fb:"σπουδάζω = j'étudie."},
+  {q:"Conjugue δουλεύω : 'vous travaillez'",ctx:'Εσείς _______',opts:['δουλεύω','δουλεύεις','δουλεύει','δουλεύετε'],correct:3,fb:'Εσείς δουλεύετε. Terminaison -ετε pour la 2e personne du pluriel.'},
+  {q:"Comment demander 'qu'est-ce que tu fais dans la vie ?' ?",ctx:'',opts:['Τι κάνεις;','Τι δουλειά κάνεις;','Πού δουλεύεις;','Τι είσαι;'],correct:1,fb:"Τι δουλειά κάνεις; = Qu'est-ce que tu fais dans la vie ?"},
+  {q:"Comment dit-on 'le bureau' ?",ctx:'',opts:['το σχολείο','το γραφείο','το νοσοκομείο','το εργοστάσιο'],correct:1,fb:'το γραφείο (to grafío) = le bureau.'},
+  {q:"Que signifie 'μου αρέσει η δουλειά μου' ?",ctx:'',opts:['Je cherche du travail',"J'ai beaucoup de travail","J'aime mon travail","Je change de travail"],correct:2,fb:"μου αρέσει = ça me plaît / j'aime."},
+  {q:"Comment dit-on 'étudiant' (masculin) ?",ctx:'',opts:['ο δάσκαλος','ο μαθητής','ο φοιτητής','ο καθηγητής'],correct:2,fb:'ο φοιτητής = étudiant (université). ο μαθητής = élève (école).'},
+  {q:"Que signifie 'περίπου' ?",ctx:'',opts:['exactement','jamais','environ','toujours'],correct:2,fb:'περίπου = environ, à peu près.'},
+  {q:"Comment dire 'je travaille à domicile' ?",ctx:'',opts:['Δουλεύω από το σπίτι','Δουλεύω στο σπίτι μου','Μένω στο σπίτι','Δουλεύω ελεύθερος'],correct:0,fb:'Δουλεύω από το σπίτι = je travaille depuis la maison.'},
+  {q:"Comment dit-on 'le salaire' ?",ctx:'',opts:['η δουλειά','το ωράριο','ο μισθός','η εμπειρία'],correct:2,fb:'ο μισθός = le salaire.'},
+  {q:"Que signifie 'ενδιαφέρον' ?",ctx:'',opts:['difficile','ennuyeux','intéressant','fatigant'],correct:2,fb:'ενδιαφέρον = intéressant (neutre).'},
+  {q:"Comment dire 'je travaille 5 jours par semaine' ?",ctx:'',opts:['Δουλεύω πέντε ώρες','Δουλεύω πέντε μέρες την εβδομάδα','Δουλεύω κάθε μέρα','Δουλεύω από Δευτέρα'],correct:1,fb:'πέντε μέρες την εβδομάδα = cinq jours par semaine.'},
+  {q:"Que signifie 'εμπειρία' ?",ctx:'',opts:["l'horaire","le bureau","l'expérience","la réunion"],correct:2,fb:"η εμπειρία = l'expérience professionnelle."},
+  {q:"Conjugue δουλεύω : 'ils travaillent'",ctx:'Αυτοί _______',opts:['δουλεύει','δουλεύουν','δουλεύουμε','δουλεύετε'],correct:1,fb:'Αυτοί δουλεύουν. Terminaison -ουν pour la 3e personne du pluriel.'},
+];
+
+let quizAnswers={}, compAnswers={};
+let speechRate=0.75, isPlayingAll=false, playIndex=-1, transHidden=false;
+let convHistory=[], msgCount=0, summaryBuilt=false, convStarted=false;
+
+function speak(text){
+  if(!window.speechSynthesis)return;
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='el-GR';u.rate=0.85;window.speechSynthesis.speak(u);
+}
+
+function buildVocab(){
+  const g=document.getElementById('vocabGrid');
+  vocab.forEach(v=>{
+    const c=document.createElement('div');c.className='vc';
+    const gkE=v.greek.replace(/'/g,"\\'");
+    c.innerHTML='<button class="spk" onclick="event.stopPropagation();speak(\''+gkE+'\')">🔊</button><div class="gk">'+v.greek+'</div><div class="ph">'+v.ph+'</div><div class="fr">'+v.fr+'</div>';
+    c.onclick=()=>c.classList.toggle('flip');g.appendChild(c);
+  });
+}
+
+function buildMetiers(){
+  const g=document.getElementById('jobsGrid');
+  jobs.forEach((j,i)=>{
+    const c=document.createElement('div');c.className='job-card';
+    const gkE=j.gk.replace(/'/g,"\\'");
+    c.innerHTML='<button class="job-spk" onclick="event.stopPropagation();speak(\''+gkE+'\')">🔊</button><div class="job-emoji">'+j.emoji+'</div><div class="job-gk">'+j.gk+'</div><div class="job-ph">'+j.ph+'</div><div class="job-fr">'+j.fr+'</div>';
+    c.onclick=()=>{
+      document.querySelectorAll('.job-card').forEach(x=>x.classList.remove('selected'));
+      c.classList.add('selected');
+      speak(j.s.gk);
+      const sE=j.s.gk.replace(/'/g,"\\'");
+      document.getElementById('jobInfo').innerHTML='<div style="font-weight:600;color:#4a1a6e;margin-bottom:6px">'+j.emoji+' '+j.gk+' — '+j.fr+'</div><div style="font-size:14px;font-weight:500;color:#111">'+j.s.gk+' <button class="aud" onclick="speak(\''+sE+'\')">🔊</button></div><div style="font-size:11px;color:#888;font-style:italic;margin:2px 0">'+j.s.ph+'</div><div style="font-size:12px;color:#555">'+j.s.fr+'</div>';
+    };
+    g.appendChild(c);
+  });
+}
+
+function buildGrammar(){
+  const tb=document.getElementById('conjTable');
+  conjData.forEach(r=>{
+    const tr=document.createElement('tr');
+    const f=r.form+r.end;
+    tr.innerHTML='<td style="color:#888;font-size:13px">'+r.pr+'</td><td class="gk-col">'+r.form+'<span class="end">'+r.end+'</span> <button class="aud" onclick="speak(\''+f+'\')">🔊</button></td><td style="font-style:italic;font-size:12px;color:#888">'+r.ph+'</td><td style="font-size:12px;color:#888">'+r.ex+'</td>';
+    tb.appendChild(tr);
+  });
+}
+
+// SYSTEM PROMPT for Claude as Kostas
+const SYSTEM=`Tu joues Kostas Dimitriou, un ingenieur grec sympa de Thessalonique. Tu rencontres quelqu'un et tu engages une VRAIE conversation en grec moderne sur le travail et les etudes.
+
+REGLES STRICTES :
+1. Tes repliques de Kostas sont toujours en grec moderne.
+2. Sous chaque replique, ajoute la phonetique et la traduction francaise.
+3. Apres CHAQUE reponse de l'apprenant (sauf la toute premiere), produis une correction structuree.
+4. Tes questions varient et suivent naturellement ce que dit l'apprenant. Reagis a son contenu.
+5. Maintiens le fil : tu te souviens de tout ce qui a ete dit.
+6. La conversation doit sembler naturelle et vivante.
+
+FORMAT EXACT (respecte CHAQUE section, dans CET ordre) :
+
+KOSTAS:
+[ta replique en grec]
+[phonetique]
+[traduction francaise]
+
+---CORRECTION---
+Original: [ce que l apprenant a ecrit]
+Grec: [transcription en alphabet grec si phonetique, sinon recopie]
+Erreurs: [liste OU "Aucune erreur"]
+Correct: [version correcte en grec]
+Explication: [1-2 phrases en francais]
+---FIN---
+
+CHIPS: [3-4 suggestions de reponse courtes en grec separees par | ]
+
+Pour le PREMIER message (ouverture), omets la section CORRECTION et ecris juste la replique + CHIPS.`;
+
+function parseResp(text){
+  const km=text.match(/KOSTAS:\s*([\s\S]*?)(?:---CORRECTION---|CHIPS:|$)/);
+  const kb=(km?km[1]:'').trim().split('\n').filter(l=>l.trim());
+  const gk=kb[0]||''; const ph=kb[1]||''; const fr=kb[2]||'';
+  const cm=text.match(/---CORRECTION---([\s\S]*?)---FIN---/);
+  let corr=null;
+  if(cm){
+    const cb=cm[1];
+    const gf=(l)=>{const m=cb.match(new RegExp(l+':\\s*([^\\n]+)'));return m?m[1].trim():'';};
+    corr={original:gf('Original'),grec:gf('Grec'),erreurs:gf('Erreurs'),correct:gf('Correct'),explication:gf('Explication')};
+  }
+  const chm=text.match(/CHIPS:\s*([^\n]+)/);
+  const chips=chm?chm[1].split('|').map(c=>c.trim()).filter(Boolean):[];
+  return {gk,ph,fr,corr,chips};
+}
+
+function addKostas(gk,ph,fr){
+  const chat=document.getElementById('chatMessages');
+  const d=document.createElement('div');d.className='msg';
+  const ge=gk.replace(/'/g,"\\'");
+  d.innerHTML='<div class="msg-av av-k">KO</div><div class="bubble b-k">'+gk+'<div class="bph">'+ph+'</div><div class="bfr">'+fr+'</div><button class="spk-line" onclick="speak(\''+ge+'\')">🔊 Ecouter</button></div>';
+  chat.appendChild(d);chat.scrollTop=chat.scrollHeight;
+  if(gk)setTimeout(()=>speak(gk),350);
+}
+
+function addUser(text){
+  const chat=document.getElementById('chatMessages');
+  const d=document.createElement('div');d.className='msg user';
+  d.innerHTML='<div class="msg-av av-u">Tu</div><div class="bubble b-u">'+text+'</div>';
+  chat.appendChild(d);chat.scrollTop=chat.scrollHeight;
+}
+
+function addCorr(corr){
+  if(!corr)return;
+  const chat=document.getElementById('chatMessages');
+  const hasErr=corr.erreurs&&corr.erreurs.toLowerCase()!=='aucune erreur'&&corr.erreurs!=='';
+  const ce=(corr.correct||'').replace(/'/g,"\\'");
+  const ge=(corr.grec||corr.original||'').replace(/'/g,"\\'");
+  const c=document.createElement('div');c.className='corr-card';
+  c.innerHTML='<div class="corr-title">✏️ Correction</div>'
+    +'<div class="corr-row"><div class="corr-label">Ta reponse</div><div class="corr-val">'+corr.original+'</div></div>'
+    +'<div class="corr-row"><div class="corr-label">→ En grec</div><div class="corr-val corr-gk">'+corr.grec+' <button class="aud" onclick="speak(\''+ge+'\')">🔊</button></div></div>'
+    +(hasErr?'<div class="corr-row"><div class="corr-label">Corrige</div><div class="corr-val corr-ok">'+corr.correct+' <button class="aud" onclick="speak(\''+ce+'\')">🔊</button></div></div>':'')
+    +'<div>'+(hasErr?'<span class="badge-err">⚠️ '+corr.erreurs+'</span>':'<span class="badge-ok">✅ Bonne reponse !</span>')+'</div>'
+    +'<div class="corr-tip">💡 '+corr.explication+'</div>';
+  chat.appendChild(c);chat.scrollTop=chat.scrollHeight;
+}
+
+function addTyping(){
+  const chat=document.getElementById('chatMessages');
+  const d=document.createElement('div');d.className='msg';d.id='typ';
+  d.innerHTML='<div class="msg-av av-k">KO</div><div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>';
+  chat.appendChild(d);chat.scrollTop=chat.scrollHeight;
+}
+function removeTyping(){const t=document.getElementById('typ');if(t)t.remove();}
+
+function setChips(chips){
+  const a=document.getElementById('hintChips');a.innerHTML='';
+  chips.forEach(c=>{
+    const s=document.createElement('span');s.className='chip';s.textContent=c;
+    s.onclick=()=>{const i=document.getElementById('msgInput');i.value=c;onType();i.focus();};
+    a.appendChild(s);
+  });
+}
+
+function onType(){document.getElementById('sendBtn').disabled=!document.getElementById('msgInput').value.trim();}
+function onKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();if(document.getElementById('msgInput').value.trim())sendMsg();}}
+
+async function sendMsg(){
+  const inp=document.getElementById('msgInput');
+  const text=inp.value.trim();if(!text)return;
+  inp.value='';document.getElementById('sendBtn').disabled=true;setChips([]);
+  addUser(text);msgCount++;
+  convHistory.push({role:'user',content:text});
+  addTyping();
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:SYSTEM,messages:convHistory})});
+    const data=await resp.json();
+    const raw=(data.content||[]).find(b=>b.type==='text')?.text||'';
+    removeTyping();
+    convHistory.push({role:'assistant',content:raw});
+    const p=parseResp(raw);
+    if(p.corr)addCorr(p.corr);
+    if(p.gk)addKostas(p.gk,p.ph,p.fr);
+    if(p.chips.length)setChips(p.chips);
+    document.getElementById('prog').style.width=Math.min(75+msgCount*3,95)+'%';
+  }catch(e){
+    removeTyping();
+    addKostas('Συγγνώμη, δεν άκουσα. Μπορείς να επαναλάβεις;','Syngnómi, den ákousa.','Desole, je n\'ai pas entendu. Tu peux repeter ?');
+  }
+}
+
+async function startConv(){
+  convHistory=[];msgCount=0;
+  document.getElementById('chatMessages').innerHTML='';
+  setChips([]);addTyping();
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:600,system:SYSTEM,messages:[{role:'user',content:'[DEBUT — Kostas ouvre la conversation chaleureusement et demande a l apprenant ce qu il fait dans la vie]'}]})});
+    const data=await resp.json();
+    const raw=(data.content||[]).find(b=>b.type==='text')?.text||'';
+    removeTyping();
+    convHistory.push({role:'user',content:'[DEBUT]'});
+    convHistory.push({role:'assistant',content:raw});
+    const p=parseResp(raw);
+    if(p.gk)addKostas(p.gk,p.ph,p.fr);
+    if(p.chips.length)setChips(p.chips);
+  }catch(e){
+    removeTyping();
+    addKostas('Γεια σου! Τι δουλειά κάνεις;','Yéia sou! Ti douliá kánis?',"Salut ! Qu'est-ce que tu fais dans la vie ?");
+    setChips(['Είμαι δάσκαλος/α','Δουλεύω σε γραφείο','Είμαι φοιτητής/τρια','Είμαι άνεργος/η']);
+  }
+}
+
+function resetConv(){if(confirm('Recommencer la conversation ?'))startConv();}
+
+function buildQuiz(){
+  const cont=document.getElementById('quizContainer');
+  quizData.forEach((q,qi)=>{
+    const card=document.createElement('div');card.className='qcard';
+    const opts=q.opts.map((o,oi)=>'<button class="qopt" id="qo-'+qi+'-'+oi+'" onclick="answerQuiz('+qi+','+oi+')">'+o+'</button>').join('');
+    card.innerHTML='<div class="qq">Q'+(qi+1)+'. '+q.q+'</div>'+(q.ctx?'<div class="qctx">'+q.ctx+'</div>':'')+'<div class="qopts">'+opts+'</div><div class="qfb" id="qf-'+qi+'"></div>';
+    cont.appendChild(card);
+  });
+}
+function answerQuiz(qi,oi){
+  if(quizAnswers[qi]!==undefined)return;quizAnswers[qi]=oi;
+  const c=quizData[qi].correct;
+  document.getElementById('qo-'+qi+'-'+c).classList.add('ok');
+  const fb=document.getElementById('qf-'+qi);
+  if(oi===c){fb.textContent='✓ '+quizData[qi].fb;fb.className='qfb show good';}
+  else{document.getElementById('qo-'+qi+'-'+oi).classList.add('ko');fb.textContent='✗ '+quizData[qi].fb;fb.className='qfb show bad';}
+  const ok=Object.entries(quizAnswers).filter(([k,v])=>quizData[k].correct===v).length;
+  document.getElementById('quizScore').textContent='Score : '+ok+' / '+Object.keys(quizAnswers).length;
+}
+
+function buildSummary(){
+  if(summaryBuilt)return;summaryBuilt=true;
+  const cont=document.getElementById('summaryExprs');
+  summaryExprs.forEach(e=>{
+    const row=document.createElement('div');row.className='erow';
+    const ge=e.greek.replace(/'/g,"\\'");
+    row.innerHTML='<span class="e-gk">'+e.greek+' <button class="aud" onclick="speak(\''+ge+'\')">🔊</button></span><span class="e-fr">'+e.fr+'</span>';
+    cont.appendChild(row);
+  });
+  buildTextBlock();buildCompQ();
+}
+
+function buildTextBlock(){
+  const b=document.getElementById('textBlock');if(b.children.length)return;
+  textLines.forEach((l,i)=>{
+    const d=document.createElement('div');d.className='text-line';d.id='tline-'+i;
+    d.onclick=()=>speakLine(i);
+    d.innerHTML='<div class="line-num">'+(i+1)+'</div><div><div class="line-gk">'+l.gk+'</div><div class="line-ph" id="ph-'+i+'">'+l.ph+'</div><div class="line-fr" id="fr-'+i+'">'+l.fr+'</div></div>';
+    b.appendChild(d);
+  });
+}
+function speakLine(i){
+  window.speechSynthesis.cancel();
+  document.querySelectorAll('.text-line').forEach(l=>l.classList.remove('highlight'));
+  document.getElementById('tline-'+i).classList.add('highlight');
+  const u=new SpeechSynthesisUtterance(textLines[i].gk);u.lang='el-GR';u.rate=speechRate;
+  u.onend=()=>document.getElementById('tline-'+i).classList.remove('highlight');
+  window.speechSynthesis.speak(u);
+}
+function setSpeed(r,id){speechRate=r;document.querySelectorAll('.speed-btn').forEach(b=>b.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function playAll(){
+  if(isPlayingAll){window.speechSynthesis.cancel();isPlayingAll=false;playIndex=-1;document.getElementById('playAllBtn').textContent='▶ Ecouter';document.getElementById('playAllBtn').className='play-btn';document.querySelectorAll('.text-line').forEach(l=>l.classList.remove('highlight'));return;}
+  isPlayingAll=true;playIndex=0;document.getElementById('playAllBtn').textContent='⏹ Arreter';document.getElementById('playAllBtn').className='play-btn playing';playNext();
+}
+function playNext(){
+  if(!isPlayingAll||playIndex>=textLines.length){isPlayingAll=false;playIndex=-1;document.getElementById('playAllBtn').textContent='▶ Reecouter';document.getElementById('playAllBtn').className='play-btn';document.querySelectorAll('.text-line').forEach(l=>l.classList.remove('highlight'));return;}
+  document.querySelectorAll('.text-line').forEach(l=>l.classList.remove('highlight'));
+  const el=document.getElementById('tline-'+playIndex);if(el){el.classList.add('highlight');el.scrollIntoView({behavior:'smooth',block:'nearest'});}
+  const u=new SpeechSynthesisUtterance(textLines[playIndex].gk);u.lang='el-GR';u.rate=speechRate;
+  u.onend=()=>{if(el)el.classList.remove('highlight');playIndex++;setTimeout(playNext,400);};
+  window.speechSynthesis.speak(u);
+}
+function toggleHideTrans(){
+  transHidden=!transHidden;
+  const btn=document.getElementById('hideTransBtn');
+  textLines.forEach((_,i)=>{['fr-','ph-'].forEach(p=>{const el=document.getElementById(p+i);if(el)el.style.display=transHidden?'none':'';});});
+  btn.textContent=transHidden?'Afficher traductions':'Masquer traductions';
+  btn.className=transHidden?'hide-btn hidden-mode':'hide-btn';
+}
+function buildCompQ(){
+  const cont=document.getElementById('compQuestions');if(cont.children.length)return;
+  compData.forEach((q,qi)=>{
+    const d=document.createElement('div');d.className='comp-q';
+    const opts=q.opts.map((o,oi)=>'<button class="comp-opt" id="co-'+qi+'-'+oi+'" onclick="answerComp('+qi+','+oi+')">'+o+'</button>').join('');
+    d.innerHTML='<div class="comp-question">Q'+(qi+1)+'. '+q.fr+'</div><div class="comp-greek">'+q.gk+'</div><div class="comp-opts">'+opts+'</div><div class="comp-fb" id="cf-'+qi+'"></div>';
+    cont.appendChild(d);
+  });
+}
+function answerComp(qi,oi){
+  if(compAnswers[qi]!==undefined)return;compAnswers[qi]=oi;
+  const c=compData[qi].correct;
+  document.getElementById('co-'+qi+'-'+c).classList.add('ok');
+  const fb=document.getElementById('cf-'+qi);
+  if(oi===c){fb.textContent='✓ '+compData[qi].fb;fb.className='comp-fb show good';}
+  else{document.getElementById('co-'+qi+'-'+oi).classList.add('ko');fb.textContent='✗ '+compData[qi].fb;fb.className='comp-fb show bad';}
+  const ok=Object.entries(compAnswers).filter(([k,v])=>compData[k].correct==v).length;
+  const pct=Math.round(ok/compData.length*100);
+  document.getElementById('compFill').style.width=pct+'%';
+  document.getElementById('compScoreLabel').textContent=ok+' / '+Object.keys(compAnswers).length+' — '+pct+'%';
+}
+function updateSummaryScore(){
+  const ok=Object.entries(quizAnswers).filter(([k,v])=>quizData[k].correct===v).length;
+  const co=Object.entries(compAnswers).filter(([k,v])=>compData[k].correct==v).length;
+  document.getElementById('summaryScore').innerHTML='Conversation avec Kostas : <strong>'+msgCount+' echanges</strong><br>Quiz grammaire : <strong>'+ok+' / '+quizData.length+'</strong><br>Comprehension : <strong>'+co+' / '+compData.length+'</strong><br>Vocabulaire : '+vocab.length+' mots | '+jobs.length+' metiers<br><br>'+(ok>=13&&co>=3?'🌟 Excellente session !':ok>=10?'👍 Tres bien ! Continue la conversation.':'💪 Refais la conversation pour gagner en fluidite !');
+}
+
+function showTab(id,btn,prog){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');btn.classList.add('active');
+  document.getElementById('prog').style.width=prog+'%';
+  if(id==='conv'&&!convStarted){convStarted=true;startConv();}
+  if(id==='summary'){buildSummary();updateSummaryScore();}
+}
+buildVocab();buildMetiers();buildGrammar();buildQuiz();
+</script>
+</body>
+</html>
